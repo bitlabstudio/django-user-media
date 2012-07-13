@@ -1,0 +1,19 @@
+# Install these requirements if you wish to contribute to this project.
+
+# ===========================================================================
+# Packages essential to this app. Needed by anyone who wants to use this app.
+# ===========================================================================
+Django
+Sphinx
+factory_boy
+
+
+# ==============================================================
+# Packages needed for running the tests. Needed by contributors.
+# ==============================================================
+nose
+django-nose
+coverage
+django-coverage
+django-jasmine
+selenium
