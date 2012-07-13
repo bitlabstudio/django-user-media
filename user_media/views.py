@@ -18,6 +18,7 @@ class CreateImageView(CreateView):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         self.user = request.user
+        self.content_object = None
         self.content_type = None
         self.object_id = kwargs.get('object_id', None)
 
@@ -30,18 +31,20 @@ class CreateImageView(CreateView):
             except ContentType.DoesNotExist:
                 raise Http404
 
-        # Check if the user forged the URL and tries to append the image to
-        # an object that does not exist
-        try:
-            self.content_object = self.content_type.get_object_for_this_type(
-                pk=self.object_id)
-        except ObjectDoesNotExist:
-            raise Http404
+        if self.content_type:
+            # Check if the user forged the URL and tries to append the image to
+            # an object that does not exist
+            try:
+                self.content_object = self.content_type.get_object_for_this_type(
+                    pk=self.object_id)
+            except ObjectDoesNotExist:
+                raise Http404
 
-        # Check if the user forged the URL and tries to append the image to
-        # an object that does not belong to him
-        if not self.content_object.user == self.user:
-            raise Http404
+        if self.content_object:
+            # Check if the user forged the URL and tries to append the image to
+            # an object that does not belong to him
+            if not self.content_object.user == self.user:
+                raise Http404
 
         return super(CreateImageView, self).dispatch(request, *args, **kwargs)
 
@@ -55,8 +58,9 @@ class CreateImageView(CreateView):
         return kwargs
 
     def get_success_url(self):
-        # TODO what if no content object is provided
-        raise NotImplementedError
+        if self.content_object:
+            return self.content_object.get_absolute_url()
+        return self.request.POST.get('next')
 
 
 class DeleteImageView(DeleteView):
@@ -73,5 +77,6 @@ class DeleteImageView(DeleteView):
         return queryset
 
     def get_success_url(self):
-        # TODO what if no content_object is provided?
-        return self.object.content_object.get_absolute_url()
+        if self.object.content_object:
+            return self.object.content_object.get_absolute_url()
+        return self.request.POST.get('next')

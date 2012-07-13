@@ -2,6 +2,9 @@
 import os
 
 
+PROJECT_ROOT = os.path.dirname(__file__)
+
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -13,6 +16,7 @@ ROOT_URLCONF = 'user_media.tests.urls'
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(__file__, '../../static/')
+MEDIA_ROOT = os.path.join(__file__, '../../media/')
 STATICFILES_DIRS = (
     os.path.join(__file__, 'test_static'),
 )
@@ -44,6 +48,7 @@ EXTERNAL_APPS = [
 INTERNAL_APPS = [
     'django_nose',
     'user_media',
+    'user_media.tests.test_app',
 ]
 
 INSTALLED_APPS = EXTERNAL_APPS + INTERNAL_APPS

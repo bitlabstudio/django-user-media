@@ -5,17 +5,18 @@ from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 
+from django_libs.tests.factories import UserFactory
+
 from user_media.forms import UserMediaImageForm
 
 
 class UserMediaImageFormTestCase(TestCase):
     """Tests for the ``UserMediaImageForm`` model form."""
     def setUp(self):
-        self.user = self.vehicle.user
-        self.object_id = self.vehicle.pk
+        self.user = UserFactory()
 
     def test_form(self):
-        test_file = os.path.join(settings.PROJECT_ROOT, 'test_media/car.png')
+        test_file = os.path.join(settings.PROJECT_ROOT, 'test_media/img.png')
         img = open(test_file)
         uploaded = SimpleUploadedFile(img.name, img.read())
         form = UserMediaImageForm(self.user, None, None,
