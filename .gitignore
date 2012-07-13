@@ -2,3 +2,4 @@
 *.egg-info/
 dist/
 docs/build/
+user_media/tests/coverage/

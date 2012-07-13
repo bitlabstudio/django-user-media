@@ -15,7 +15,7 @@ Since it seems inevitable to implement a function for Django's FileField's
 ``upload_to`` attribute I thought that this might be a candidate for a reusable
 app.
 
-This project is experimental. We are using it on two completely different
+__This project is experimental__. We are using it on two completely different
 live projects and will hopefully come up with an implementation that is so
 generic that it can safely be used by anyone.
 
