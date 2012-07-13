@@ -37,10 +37,9 @@ To get the latest commit from GitHub::
 Usage
 -----
 
-See the docs folder for descriptions of the different tools this project
-provides.
+Coming soon...
 
-Or read the docs here: http://django-user-media.readthedocs.org/en/latest/
+The docs will be here: http://django-user-media.readthedocs.org/en/latest/
 
 Contribute
 ----------
