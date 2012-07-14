@@ -1,7 +1,7 @@
 *.egg-info/
 *.pyc
+/media/
 db.sqlite
 dist/
 docs/build/
-user_media/media/
 user_media/tests/coverage/

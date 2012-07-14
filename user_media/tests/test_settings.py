@@ -15,8 +15,8 @@ DATABASES = {
 ROOT_URLCONF = 'user_media.tests.urls'
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(__file__, '../../static/')
-MEDIA_ROOT = os.path.join(__file__, '../../media/')
+STATIC_ROOT = os.path.join(__file__, '../../../static/')
+MEDIA_ROOT = os.path.join(__file__, '../../../media/')
 STATICFILES_DIRS = (
     os.path.join(__file__, 'test_static'),
 )
