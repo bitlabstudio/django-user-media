@@ -92,7 +92,9 @@ It makes sense to add a convenience method to your ``UserProfile`` model::
     class UserProfile(models.Model):
         ...
         def get_avatar(self):
-            return self.avatar.all()[0]
+            if self.avatar.all().count():
+                return self.avatar.all()[0]
+            return None
 
 In your templates you can now provide a link to the image creation view like
 this (assuming that your ``UserProfile`` object is called ``object`` in the
