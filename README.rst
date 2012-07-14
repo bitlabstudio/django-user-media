@@ -179,4 +179,4 @@ Discuss
 If you have questions or issues, please open an issue on GitHub.
 
 If we don't react quickly, please don't hesitate to ping me on Twitter
-_@mbrochh: https://twitter.com/mbrochh
+(`@mbrochh <https://twitter.com/mbrochh>`_)
