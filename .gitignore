@@ -1,6 +1,7 @@
-*.pyc
 *.egg-info/
+*.pyc
+db.sqlite
 dist/
 docs/build/
-user_media/tests/coverage/
 user_media/media/
+user_media/tests/coverage/

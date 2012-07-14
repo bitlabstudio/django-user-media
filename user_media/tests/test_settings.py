@@ -6,9 +6,9 @@ PROJECT_ROOT = os.path.dirname(__file__)
 
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": ":memory:",
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
     }
 }
 
@@ -43,10 +43,10 @@ EXTERNAL_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.sites',
     'django_jasmine',
+    'django_nose',
 ]
 
 INTERNAL_APPS = [
-    'django_nose',
     'user_media',
     'user_media.tests.test_app',
 ]

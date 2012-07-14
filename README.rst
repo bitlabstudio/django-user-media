@@ -48,7 +48,7 @@ If you want to contribute to this project, please perform the following steps::
 
     # Fork this repository
     # Clone your fork
-    $ mkvirtualenv -p python2.7 django-libs
+    $ mkvirtualenv -p python2.7 django-user-media
     $ pip install -r requirements.txt
 
     $ git co -b feature_branch master
@@ -56,3 +56,27 @@ If you want to contribute to this project, please perform the following steps::
     $ git add . && git commit
     $ git push -u origin feature_branch
     # Send us a pull request for your feature branch
+
+Testing
+-------
+
+If you want to contribute to this project you can run the tests without setting
+up a Django project. Just clone this repository and execute the
+``runtests.py``::
+
+    $ ./user_media/tests/runtests.py
+
+Sometimes a new feature needs new South migrations, in this case you should
+do the following::
+
+    $ rm db.sqlite
+    $ ./manage.py syncdb --migrate
+    $ ./manage.py schemamigration user_media --auto
+
+Discuss
+-------
+
+If you have questions or issues, please open an issue on GitHub.
+
+If we don't react quickly, please don't hesitate to ping me on Twitter
+_@mbrochh: https://twitter.com/mbrochh

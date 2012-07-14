@@ -4,6 +4,7 @@
 # Packages essential to this app. Needed by anyone who wants to use this app.
 # ===========================================================================
 Django==1.4
+South
 django-libs==0.4
 Sphinx
 factory_boy
