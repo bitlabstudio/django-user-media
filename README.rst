@@ -85,14 +85,14 @@ Now you will be able to get all uploaded images that belong to a
 ``UserProfile`` by doing this::
 
     profile = UserProfile.objects.get(pk=1)
-    images = profile.avatar.filter(user=profile.user)
+    images = profile.avatar.all()
 
 It makes sense to add a convenience method to your ``UserProfile`` model::
 
     class UserProfile(models.Model):
         ...
         def get_avatar(self):
-            return self.avatar.filter(user=self.user)
+            return self.avatar.all()[0]
 
 In your templates you can now provide a link to the image creation view like
 this (assuming that your ``UserProfile`` object is called ``object`` in the
@@ -124,15 +124,15 @@ to your templates that call the views of this application. On your
 ``UserProfile`` detail view you could display the avatar, if available::
 
     {% if object.get_avatar %}
-        <img src="{{ MEDIA_URL }}{{ object.get_avatar.0.image }}" />
+        <img src="{{ MEDIA_URL }}{{ object.get_avatar.image }}" />
     {% endif %}
 
 Or in your ``UserProfile`` update view you could display a link to upload a
 new image or to delete the existing image::
 
     {% if form.instance.get_avatar %}
-        <p><img src="{{ MEDIA_URL }}{{ form.instance.get_avatar.0.image }}" /></p>
-        <a href="{% url "user_media_image_delete" pk=form.instance.get_avatar.0.pk %}">Delete picture</a>
+        <p><img src="{{ MEDIA_URL }}{{ form.instance.get_avatar.image }}" /></p>
+        <a href="{% url "user_media_image_delete" pk=form.instance.get_avatar.pk %}">Delete picture</a>
     {% else %}
         <a href="{% url "user_media_image_create" content_type="userprofile" object_id=form.instance.pk %}">Add profile picture</a>
     {% endif %}
