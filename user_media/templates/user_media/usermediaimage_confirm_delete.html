@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block main %}
+<h1>{% trans "Delete image" %}</h1>
+<p>{% trans "Are you sure you want to delete this image?" %}</p>
+<form method="post" action=".">
+    <fieldset>
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}" />
+        <input type="submit" value="{% trans "Delete image" %}" />
+        <a href="{{ next }}">{% trans "Cancel" %}</a>
+    </fieldset>
+</form>
+{% endblock %}

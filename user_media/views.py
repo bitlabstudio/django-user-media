@@ -1,7 +1,6 @@
 """Views for the ``django-user-media`` app."""
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import reverse
 from django.db.models import ObjectDoesNotExist
 from django.http import Http404
 from django.utils.decorators import method_decorator
@@ -17,6 +16,7 @@ class CreateImageView(CreateView):
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
+        self.next = request.POST.get('next', '') or request.GET.get('next', '')
         self.user = request.user
         self.content_object = None
         self.content_type = None
@@ -48,6 +48,13 @@ class CreateImageView(CreateView):
 
         return super(CreateImageView, self).dispatch(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        ctx = super(CreateImageView, self).get_context_data(**kwargs)
+        ctx.update({
+            'next': self.next,
+        })
+        return ctx
+
     def get_form_kwargs(self, **kwargs):
         kwargs = super(CreateImageView, self).get_form_kwargs()
         kwargs.update({
@@ -58,9 +65,13 @@ class CreateImageView(CreateView):
         return kwargs
 
     def get_success_url(self):
+        if self.next:
+            return self.next
         if self.content_object:
             return self.content_object.get_absolute_url()
-        return self.request.POST.get('next')
+        raise Exception(
+            'No content object given. Please provide ``next`` in your POST'
+            ' data')
 
 
 class DeleteImageView(DeleteView):
@@ -68,8 +79,16 @@ class DeleteImageView(DeleteView):
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
+        self.next = request.POST.get('next', '') or request.GET.get('next', '')
         self.user = request.user
         return super(DeleteImageView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(DeleteImageView, self).get_context_data(**kwargs)
+        ctx.update({
+            'next': self.next or self.object.content_object.get_absolute_url(),
+        })
+        return ctx
 
     def get_queryset(self):
         queryset = super(DeleteImageView, self).get_queryset()
@@ -77,6 +96,10 @@ class DeleteImageView(DeleteView):
         return queryset
 
     def get_success_url(self):
+        if self.next:
+            return self.next
         if self.object.content_object:
             return self.object.content_object.get_absolute_url()
-        return self.request.POST.get('next')
+        raise Exception(
+            'No content object given. Please provide ``next`` in your POST'
+            ' data')

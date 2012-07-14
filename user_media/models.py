@@ -49,7 +49,7 @@ class UserMediaImage(models.Model):
 
     content_object = generic.GenericForeignKey('content_type', 'object_id')
 
-    image = models.FileField(
+    image = models.ImageField(
         upload_to=get_image_file_path,
         null=True, blank=True,
         verbose_name=_('Image'),
