@@ -55,7 +55,7 @@ Hook the app into your main ``urls.py``::
 
     urlpatterns += patterns('',
         ...
-        url(r'umedia/', include('user_media.urls')),
+        url(r'^umedia/', include('user_media.urls')),
     )
 
 Run the south migrations to create the app's database tables::
