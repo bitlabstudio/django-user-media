@@ -101,7 +101,7 @@ this (assuming that your ``UserProfile`` object is called ``object`` in the
 template's context)::
 
     {% load url from future %}
-    <a href="{% url "user_media_create_image" content_type="userprofile" object_id=object.pk %}">Upload your picture</a>
+    <a href="{% url "user_media_image_create" content_type="userprofile" object_id=object.pk %}">Upload your picture</a>
 
 Note that ``userprofile`` is the model name that the ``ContentType`` of your
 ``UserProfile`` model would return. You can figure this out with ``./manage.py
@@ -119,7 +119,7 @@ After uploading the image the view should redirect back to the absolute url
 of your ``UserProfile``. If you want to redirect to another URL, you can
 provide a ``next`` URL parameter via POST or GET::
 
-        <a href="{% url "user_media_create_image" content_type="userprofile" object_id=object.pk %}?next=/foo/bar">Upload your picture</a>
+        <a href="{% url "user_media_image_create" content_type="userprofile" object_id=object.pk %}?next=/foo/bar">Upload your picture</a>
 
 Now you should have all building blocks that you need to add links or buttons
 to your templates that call the views of this application. On your
