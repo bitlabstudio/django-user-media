@@ -23,6 +23,7 @@ Since we are dealing with files here and not only with a database, backwards
 incompatible changes might turn out to be a pain in the ass to deploy on your
 production sites. You have been warned.
 
+
 Prerequisites
 -------------
 
@@ -32,6 +33,7 @@ You need at least the following packages in your virtualenv:
 * South
 
 TODO: Test if this really is all we need
+
 
 Installation
 ------------
@@ -62,8 +64,13 @@ Run the south migrations to create the app's database tables::
 
     $ ./manage.py migrate user_media
 
+
 Usage
 -----
+
+
+Add generic relation
+++++++++++++++++++++
 
 Let's assume that you have a ``UserProfile`` model and you want to add an
 ``avatar`` field to that model.
@@ -81,6 +88,10 @@ model::
             'user_media.UserMediaImage',
         )
 
+
+Add property
+++++++++++++
+
 Now you will be able to get all uploaded images that belong to a
 ``UserProfile`` by doing this::
 
@@ -91,10 +102,16 @@ It makes sense to add a convenience method to your ``UserProfile`` model::
 
     class UserProfile(models.Model):
         ...
-        def get_avatar(self):
-            if self.avatar.all().count():
+        @property
+        def avatar(self):
+            try:
                 return self.avatar.all()[0]
-            return None
+            except IndexError:
+                return None
+
+
+Add link to update form
++++++++++++++++++++++++
 
 In your templates you can now provide a link to the image creation view like
 this (assuming that your ``UserProfile`` object is called ``object`` in the
@@ -113,28 +130,37 @@ shell`` for example::
     In [3]: ContentType.objects.get_for_model(UserProfile).model
     Out [1]: u'userprofile'
 
-When visiting that link, the user should see an image upload form. You might
+When visiting that link, the user will see an image upload form. You might
 want to override that template (``user_media/usermediaimage_form.html``).
+
 After uploading the image the view should redirect back to the absolute url
 of your ``UserProfile``. If you want to redirect to another URL, you can
 provide a ``next`` URL parameter via POST or GET::
 
         <a href="{% url "user_media_image_create" content_type="userprofile" object_id=object.pk %}?next=/foo/bar">Upload your picture</a>
 
+
+Display images
+++++++++++++++
+
 Now you should have all building blocks that you need to add links or buttons
 to your templates that call the views of this application. On your
 ``UserProfile`` detail view you could display the avatar, if available::
 
-    {% if object.get_avatar %}
-        <img src="{{ MEDIA_URL }}{{ object.get_avatar.image }}" />
+    {% if object.avatar %}
+        <img src="{{ MEDIA_URL }}{{ object.avatar.image }}" />
     {% endif %}
+
+
+Delete images
++++++++++++++
 
 Or in your ``UserProfile`` update view you could display a link to upload a
 new image or to delete the existing image::
 
     {% if form.instance.get_avatar %}
-        <p><img src="{{ MEDIA_URL }}{{ form.instance.get_avatar.image }}" /></p>
-        <a href="{% url "user_media_image_delete" pk=form.instance.get_avatar.pk %}">Delete picture</a>
+        <p><img src="{{ MEDIA_URL }}{{ form.instance.avatar.image }}" /></p>
+        <a href="{% url "user_media_image_delete" pk=form.instance.avatar.pk %}">Delete picture</a>
     {% else %}
         <a href="{% url "user_media_image_create" content_type="userprofile" object_id=form.instance.pk %}">Add profile picture</a>
     {% endif %}
@@ -142,6 +168,30 @@ new image or to delete the existing image::
 The delete link in this example will render the
 ``user_media/usermediaimage_confirm_delete.html`` template, which you might
 want to override in your project.
+
+
+Upload from your own model form
++++++++++++++++++++++++++++++++
+
+Often you might not want to provide a dedicated form for uploading images but
+you might want to have an image field right on the model form of your content
+object. In this case you can inherit from `UserMediaImageFormMixin`::
+
+    from django import forms
+    from user_media.forms import UserMediaImageFormMixin
+    from yourapp.models import UserProfile
+
+    class UserProfileForm(UserMediaImageFormMixin, forms.ModelForm):
+        image_label = _('Image')
+        require_user_media_image = False
+
+        # your form implementation
+
+The mixin will dynamically add a `forms.ImageField` with the name
+`user_media_image` to your form. You can control the label of that field by
+setting the `image_label` attribute on your form class. You can also make the
+field mandatory by setting the `require_user_media_image` attribute to `True`.
+
 
 Contribute
 ----------
@@ -159,6 +209,7 @@ If you want to contribute to this project, please perform the following steps::
     $ git push -u origin feature_branch
     # Send us a pull request for your feature branch
 
+
 Testing
 -------
 
@@ -174,6 +225,7 @@ do the following::
     $ rm db.sqlite
     $ ./manage.py syncdb --migrate
     $ ./manage.py schemamigration user_media --auto
+
 
 Discuss
 -------
