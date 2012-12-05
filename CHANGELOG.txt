@@ -1,5 +1,7 @@
 === ongoing ===
 
+=== 0.3 ===
+
 - Added UpdateView
 
 === 0.2 ===
