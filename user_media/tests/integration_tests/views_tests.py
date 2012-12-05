@@ -119,8 +119,8 @@ class CreateImageViewNoCtypeTestCase(ViewTestMixin, TestCase):
                     ' view should raise an exception'))
 
 
-class DeleteImageViewTestCase(ViewTestMixin, TestCase):
-    """Tests for the ``DeleteImageView`` generic view class."""
+class EditAndDeleteTestCaseMixin(object):
+    """Tests that are the same for both views."""
     def setUp(self):
         self.dummy = DummyModelFactory()
         self.user = self.dummy.user
@@ -129,12 +129,6 @@ class DeleteImageViewTestCase(ViewTestMixin, TestCase):
         self.image.save()
         self.image_no_content_object = UserMediaImageFactory(user=self.user)
         self.other_image = UserMediaImageFactory()
-
-    def get_view_name(self):
-        return 'user_media_image_delete'
-
-    def get_view_kwargs(self):
-        return {'pk': self.image.pk}
 
     def test_view_with_content_object(self):
         self.should_be_callable_when_authenticated(self.user)
@@ -160,12 +154,12 @@ class DeleteImageViewTestCase(ViewTestMixin, TestCase):
         resp = self.client.post(self.get_url(
             view_kwargs={'pk': self.other_image.pk}))
         self.assertEqual(resp.status_code, 404, msg=(
-            "Should return 404 if the user tries to delete another user's"
+            "Should return 404 if the user tries to manipulate another user's"
             " object"))
 
         resp = self.client.post(self.get_url(view_kwargs={'pk': 999}))
         self.assertEqual(resp.status_code, 404, msg=(
-            'Should return 404 if the user tries to delete a non existing'
+            'Should return 404 if the user tries to manipulate a non existing'
             ' object'))
 
     def test_view_without_content_object(self):
@@ -185,3 +179,23 @@ class DeleteImageViewTestCase(ViewTestMixin, TestCase):
             self.assertTrue('No content object' in ex.message, msg=(
                 'If no content object and no ``next`` parameter given,'
                 ' view should raise an exception'))
+
+
+class DeleteImageViewTestCase(ViewTestMixin, EditAndDeleteTestCaseMixin,
+                              TestCase):
+    """Tests for the ``DeleteImageView`` generic view class."""
+    def get_view_name(self):
+        return 'user_media_image_delete'
+
+    def get_view_kwargs(self):
+        return {'pk': self.image.pk}
+
+
+class EditImageViewTestCase(ViewTestMixin, EditAndDeleteTestCaseMixin,
+                            TestCase):
+    """Tests for the ``EditImageView`` view class."""
+    def get_view_name(self):
+        return 'user_media_image_edit'
+
+    def get_view_kwargs(self):
+        return {'pk': self.image.pk}

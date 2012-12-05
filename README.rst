@@ -152,8 +152,8 @@ to your templates that call the views of this application. On your
     {% endif %}
 
 
-Delete images
-+++++++++++++
+Delete and edit images
+++++++++++++++++++++++
 
 Or in your ``UserProfile`` update view you could display a link to upload a
 new image or to delete the existing image::
@@ -168,6 +168,10 @@ new image or to delete the existing image::
 The delete link in this example will render the
 ``user_media/usermediaimage_confirm_delete.html`` template, which you might
 want to override in your project.
+
+A link for editing an existing image would look like this::
+
+        <a href="{% url "user_media_image_edit" pk=form.instance.avatar.pk %}">Edit picture</a>
 
 
 Upload from your own model form

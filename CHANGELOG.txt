@@ -1,5 +1,7 @@
 === ongoing ===
 
+- Added UpdateView
+
 === 0.2 ===
 
 - Added UserMediaImageFormMixin which allows us to upload an image as part of

@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import ObjectDoesNotExist
 from django.http import Http404
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, DeleteView
+from django.views.generic import CreateView, DeleteView, UpdateView
 
 from user_media.forms import UserMediaImageForm
 from user_media.models import UserMediaImage
@@ -109,10 +109,7 @@ class DeleteImageView(UserMediaImageViewMixin, DeleteView):
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        """
-        Adds useful objects to the class.
-
-        """
+        """Adds useful objects to the class."""
         self._add_next_and_user(request)
         return super(DeleteImageView, self).dispatch(request, *args, **kwargs)
 
@@ -124,5 +121,37 @@ class DeleteImageView(UserMediaImageViewMixin, DeleteView):
 
         """
         queryset = super(DeleteImageView, self).get_queryset()
+        queryset = queryset.filter(user=self.user)
+        return queryset
+
+
+class UpdateImageView(UserMediaImageViewMixin, UpdateView):
+    """Updates an existing `UserMediaImage` object."""
+    model = UserMediaImage
+    form_class = UserMediaImageForm
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        """Adds useful objects to the class."""
+        self._add_next_and_user(request)
+        return super(UpdateImageView, self).dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super(UserMediaImageViewMixin, self).get_form_kwargs()
+        kwargs.update({
+            'user': self.user,
+            'content_type': self.object.content_type,
+            'object_id': self.object.object_id,
+        })
+        return kwargs
+
+    def get_queryset(self):
+        """
+        Making sure that a user can only edit his own images.
+
+        Even when he forges the request URL.
+
+        """
+        queryset = super(UpdateImageView, self).get_queryset()
         queryset = queryset.filter(user=self.user)
         return queryset

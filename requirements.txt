@@ -3,10 +3,10 @@
 # ===========================================================================
 # Packages essential to this app. Needed by anyone who wants to use this app.
 # ===========================================================================
-Django==1.4
+Django==1.4.2
 Pillow
 South
-django-libs==0.4
+django-libs==0.8
 Sphinx
 factory_boy
 
