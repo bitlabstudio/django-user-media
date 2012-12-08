@@ -1,5 +1,7 @@
 === ongoing ===
 
+- Added admin for the UserMediaImage model.
+
 === 0.3 ===
 
 - Added UpdateView
