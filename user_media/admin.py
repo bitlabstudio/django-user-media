@@ -7,6 +7,7 @@ from user_media.models import UserMediaImage
 class UserMediaImageAdmin(admin.ModelAdmin):
     list_display = ('user_email', 'content_type', 'object_id', 'image', )
     list_filter = ('content_type', )
+    search_fields = ('user__email', )
 
     def user_email(self, obj):
         return obj.user.email

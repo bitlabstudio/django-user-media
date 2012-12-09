@@ -1,5 +1,7 @@
 === 0.5 (ongoing) ===
 
+- Added user__email to search fields for UserMediaImage admin.
+
 === 0.4 ===
 
 - Added admin for the UserMediaImage model.
