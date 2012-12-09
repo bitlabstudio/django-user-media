@@ -1,4 +1,6 @@
-=== 0.5 (ongoing) ===
+=== 0.6 (ongoing) ===
+
+=== 0.5 ===
 
 - Added user__email to search fields for UserMediaImage admin.
 
