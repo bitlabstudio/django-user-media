@@ -114,15 +114,23 @@ class CreateImageView(AjaxResponseMixin, UserMediaImageViewMixin, CreateView):
         return kwargs
 
 
-class DeleteImageView(UserMediaImageViewMixin, DeleteView):
+class DeleteImageView(AjaxResponseMixin, UserMediaImageViewMixin, DeleteView):
     """Deletes an `UserMediaImage` object."""
     model = UserMediaImage
+    ajax_template_prefix = 'partials/ajax_'
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         """Adds useful objects to the class."""
         self._add_next_and_user(request)
         return super(DeleteImageView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(DeleteImageView, self).get_context_data(**kwargs)
+        ctx.update({
+            'image_pk': self.object.pk,
+        })
+        return ctx
 
     def get_queryset(self):
         """

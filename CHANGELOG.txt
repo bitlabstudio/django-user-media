@@ -1,5 +1,7 @@
 === 0.7 (ongoing) ===
 
+- DeleteImageView now inherits AjaxResponseMixin of django-libs
+
 === 0.6 ===
 
 - CreateImageView now inherits AjaxResponseMixin of django-libs
