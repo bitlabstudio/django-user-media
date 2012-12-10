@@ -1,4 +1,6 @@
-=== 0.7 (ongoing) ===
+=== 0.8 (ongoing) ===
+
+=== 0.7 ===
 
 - DeleteImageView now inherits AjaxResponseMixin of django-libs
 
