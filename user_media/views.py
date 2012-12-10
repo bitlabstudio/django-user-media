@@ -6,6 +6,8 @@ from django.http import Http404
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DeleteView, UpdateView
 
+from django_libs.views_mixins import AjaxResponseMixin
+
 from user_media.forms import UserMediaImageForm
 from user_media.models import UserMediaImage
 
@@ -55,8 +57,9 @@ class UserMediaImageViewMixin(object):
             ' data')
 
 
-class CreateImageView(UserMediaImageViewMixin, CreateView):
+class CreateImageView(AjaxResponseMixin, UserMediaImageViewMixin, CreateView):
     form_class = UserMediaImageForm
+    ajax_template_prefix = 'partials/ajax_'
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -92,6 +95,14 @@ class CreateImageView(UserMediaImageViewMixin, CreateView):
                 raise Http404
 
         return super(CreateImageView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(CreateImageView, self).get_context_data(**kwargs)
+        ctx.update({
+            'content_type': self.content_type,
+            'object_id': self.object_id,
+        })
+        return ctx
 
     def get_form_kwargs(self):
         kwargs = super(UserMediaImageViewMixin, self).get_form_kwargs()

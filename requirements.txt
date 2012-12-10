@@ -6,7 +6,7 @@
 Django==1.4.2
 Pillow
 South
-django-libs==0.8
+django-libs==0.10
 Sphinx
 factory_boy
 

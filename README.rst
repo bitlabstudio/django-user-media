@@ -196,6 +196,17 @@ The mixin will dynamically add a `forms.ImageField` with the name
 setting the `image_label` attribute on your form class. You can also make the
 field mandatory by setting the `require_user_media_image` attribute to `True`.
 
+AJAX calls
+----------
+
+You might want to call the ``CreateImageView`` from an AJAX call, i.e. when
+displaying the form in a jQuery modal. To make life easier the view will
+return a different template when the request is an AJAX call.
+
+The names of the alternative templates are
+``user_media/partials/ajax_usermediaimage_form.html`` and
+``user_media/partials/ajax_usermediaimage_confirm_delete.html``.
+
 
 Contribute
 ----------

@@ -3,16 +3,5 @@
 
 {% block main %}
 <h1>{% trans "Upload new image" %}</h1>
-<form method="post" enctype="multipart/form-data" action=".">
-    <fieldset>
-        {% csrf_token %}
-        {% for field in form %}
-            {{ field.errors }}
-            {{ field.label }}
-            {{ field }}
-        {% endfor %}
-        <input type="hidden" name="next" value="{{ next }}" />
-        <input type="submit" value="{% trans "Upload image" %}" />
-    </fieldset>
-</form>
+{% include "user_media/partials/ajax_usermediaimage_form.html" %}
 {% endblock %}

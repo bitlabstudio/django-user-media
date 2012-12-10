@@ -1,5 +1,7 @@
 === 0.6 (ongoing) ===
 
+- CreateImageView now inherits AjaxResponseMixin of django-libs
+
 === 0.5 ===
 
 - Added user__email to search fields for UserMediaImage admin.
