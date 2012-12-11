@@ -36,6 +36,7 @@ class UserMediaImageViewMixin(object):
         """
         ctx = super(UserMediaImageViewMixin, self).get_context_data(**kwargs)
         ctx.update({
+            'action': self.action,
             'next': self.next,
         })
         return ctx
@@ -58,6 +59,7 @@ class UserMediaImageViewMixin(object):
 
 
 class CreateImageView(AjaxResponseMixin, UserMediaImageViewMixin, CreateView):
+    action = 'create'
     form_class = UserMediaImageForm
     ajax_template_prefix = 'partials/ajax_'
 
@@ -105,7 +107,7 @@ class CreateImageView(AjaxResponseMixin, UserMediaImageViewMixin, CreateView):
         return ctx
 
     def get_form_kwargs(self):
-        kwargs = super(UserMediaImageViewMixin, self).get_form_kwargs()
+        kwargs = super(CreateImageView, self).get_form_kwargs()
         kwargs.update({
             'user': self.user,
             'content_type': self.content_type,
@@ -116,6 +118,7 @@ class CreateImageView(AjaxResponseMixin, UserMediaImageViewMixin, CreateView):
 
 class DeleteImageView(AjaxResponseMixin, UserMediaImageViewMixin, DeleteView):
     """Deletes an `UserMediaImage` object."""
+    action = 'delete'
     model = UserMediaImage
     ajax_template_prefix = 'partials/ajax_'
 
@@ -144,10 +147,12 @@ class DeleteImageView(AjaxResponseMixin, UserMediaImageViewMixin, DeleteView):
         return queryset
 
 
-class UpdateImageView(UserMediaImageViewMixin, UpdateView):
+class UpdateImageView(AjaxResponseMixin, UserMediaImageViewMixin, UpdateView):
     """Updates an existing `UserMediaImage` object."""
+    action = 'update'
     model = UserMediaImage
     form_class = UserMediaImageForm
+    ajax_template_prefix = 'partials/ajax_'
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -155,8 +160,17 @@ class UpdateImageView(UserMediaImageViewMixin, UpdateView):
         self._add_next_and_user(request)
         return super(UpdateImageView, self).dispatch(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        ctx = super(UpdateImageView, self).get_context_data(**kwargs)
+        ctx.update({
+            'content_type': self.object.content_type,
+            'object_id': self.object.object_id,
+            'image_pk': self.object.pk,
+        })
+        return ctx
+
     def get_form_kwargs(self):
-        kwargs = super(UserMediaImageViewMixin, self).get_form_kwargs()
+        kwargs = super(UpdateImageView, self).get_form_kwargs()
         kwargs.update({
             'user': self.user,
             'content_type': self.object.content_type,
