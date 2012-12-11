@@ -1,5 +1,7 @@
 === 0.8 (ongoing) ===
 
+=== 0.8 ===
+
 - Enhanced UpdateView so that we can use it with AJAX calls as well.
 
 === 0.7 ===
