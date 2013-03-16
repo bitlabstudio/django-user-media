@@ -54,3 +54,7 @@ class UserMediaImage(models.Model):
         null=True, blank=True,
         verbose_name=_('Image'),
     )
+
+    position = models.PositiveIntegerField(
+        blank=True, null=True,
+    )
