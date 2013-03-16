@@ -62,7 +62,7 @@ class UserMediaImageForm(forms.ModelForm):
     """Form that allows to create or update an `UserMediaImage` object."""
     class Meta:
         model = UserMediaImage
-        exclude = ('user', 'content_type', 'object_id')
+        fields = ('image',)
 
     def __init__(self, user, content_type, object_id, *args, **kwargs):
         self.user = user
