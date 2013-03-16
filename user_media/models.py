@@ -31,6 +31,7 @@ class UserMediaImage(models.Model):
     :object_id: If this image belongs to a certain object (i.e. a Vehicle),
       this should be the object's ID.
     :image: The uploaded image.
+    :position: The position of the image in case of multiple ones.
 
     """
     user = models.ForeignKey(
