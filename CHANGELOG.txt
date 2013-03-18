@@ -1,5 +1,8 @@
 === 0.8 (ongoing) ===
 
+- added fallback to content_object.get_user() to CreateImageView if
+  content_object has no attribute user
+
 === 0.8 ===
 
 - Enhanced UpdateView so that we can use it with AJAX calls as well.
