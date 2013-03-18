@@ -93,7 +93,11 @@ class CreateImageView(AjaxResponseMixin, UserMediaImageViewMixin, CreateView):
         if self.content_object:
             # Check if the user forged the URL and tries to append the image to
             # an object that does not belong to him
-            if not self.content_object.user == self.user:
+            if hasattr(self.content_object, 'user'):
+                user = self.content_object.user
+            else:
+                user = self.content_object.get_user()
+            if not user == self.user:
                 raise Http404
 
         return super(CreateImageView, self).dispatch(request, *args, **kwargs)
