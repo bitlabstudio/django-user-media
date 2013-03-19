@@ -1,5 +1,6 @@
 === 0.8 (ongoing) ===
 
+- added position field to UserMediaImage model
 - added fallback to content_object.get_user() to CreateImageView if
   content_object has no attribute user
 
