@@ -1,3 +1,9 @@
+=== (ongoing) ===
+
+=== 0.9 ===
+
+- fixed form validation bug with Django 1.5
+
 === 0.8 (ongoing) ===
 
 - added position field to UserMediaImage model
