@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ STATIC_URL }}user_media/css/libs/jquery.fileupload-ui.css">
+</head>
+<body>
+
+{% if dummy_gallery %}
+    {% include "user_media/partials/image_loop.html" with content_type=gallery_ctype object=dummy_gallery %}
+    <script src="{{ STATIC_URL }}user_media/js/libs/jquery-1.9.1.js"></script>
+    <script src="{{ STATIC_URL }}user_media/js/libs/jquery-ui-1.10.3.custom.min.js"></script>
+    <script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
+    {% include "user_media/partials/image_loop_scripts.html" %}
+{% else %}
+    Add a gallery to the database first.
+{% endif %}
+
+</body>
+</html>

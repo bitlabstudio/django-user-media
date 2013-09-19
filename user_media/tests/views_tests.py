@@ -8,7 +8,11 @@ from django.test import TestCase
 from django_libs.tests.factories import UserFactory
 from django_libs.tests.mixins import ViewTestMixin
 
-from user_media.tests.factories import DummyModelFactory, UserMediaImageFactory
+from user_media.tests.factories import (
+    DummyGalleryFactory,
+    DummyModelFactory,
+    UserMediaImageFactory,
+)
 
 
 class CreateImageViewTestCase(ViewTestMixin, TestCase):
@@ -23,6 +27,7 @@ class CreateImageViewTestCase(ViewTestMixin, TestCase):
         self.dummy = DummyModelFactory()
         self.user = self.dummy.user
         self.other_dummy = DummyModelFactory()
+        self.gallery = DummyGalleryFactory()
 
     def get_view_name(self):
         return 'user_media_image_create'
@@ -42,10 +47,10 @@ class CreateImageViewTestCase(ViewTestMixin, TestCase):
         with open(test_file) as fp:
             data = {'image': fp, }
             resp = self.client.post(self.get_url(), data=data)
-            self.assertRedirects(resp, self.dummy.get_absolute_url(),
-                msg_prefix=(
-                    'When a content object given, view should redirect to the'
-                    ' absolute URL of the content object.'))
+            self.assertRedirects(
+                resp, self.dummy.get_absolute_url(),
+                msg_prefix=('When a content object given, view should redirect'
+                            ' to the absolute URL of the content object.'))
 
         with open(test_file) as fp:
             data = {'image': fp, 'next': '/?foo=bar'}
@@ -81,6 +86,12 @@ class CreateImageViewTestCase(ViewTestMixin, TestCase):
         self.assertEqual(resp.status_code, 404, msg=(
             "Should raise 404 if the user tries to add an image to another"
             " uers's content object"))
+
+        self.is_not_callable(kwargs={
+            'content_type': ContentType.objects.get_for_model(
+                self.gallery).model,
+            'object_id': self.gallery.pk,
+        })
 
 
 class CreateImageViewNoCtypeTestCase(ViewTestMixin, TestCase):
@@ -199,3 +210,80 @@ class EditImageViewTestCase(ViewTestMixin, EditAndDeleteTestCaseMixin,
 
     def get_view_kwargs(self):
         return {'pk': self.image.pk}
+
+
+class UserMediaUploadAJAXViewTestCase(ViewTestMixin, TestCase):
+    """Tests for the ``UserMediaUploadAJAXView`` generic view class."""
+    longMessage = True
+
+    def setUp(self):
+        self.gallery = DummyGalleryFactory()
+        self.other_gallery = DummyGalleryFactory()
+        self.invalid_content_object = UserFactory()
+        self.content_type = ContentType.objects.get_for_model(
+            self.gallery).model
+
+    def get_view_name(self):
+        return 'user_media_upload_multiple'
+
+    def get_view_kwargs(self):
+        return {
+            'content_type': self.content_type,
+            'object_id': self.gallery.id,
+        }
+
+    def upload_to_gallery(self):
+        f = open('test_media/img.png')
+        kwargs = {
+            'content_type': self.content_type,
+            'object_id': self.gallery.id,
+        }
+        self.is_callable('post', {'image': f}, ajax=True, kwargs=kwargs,
+                         message=('Upload should be valid.'))
+        f.close()
+
+    def test_view(self):
+        self.is_not_callable()
+        self.is_not_callable(user=self.gallery.user_connection,
+                             message=('Should only be callable via AJAX.'))
+
+        self.is_not_callable(
+            user=self.gallery.user_connection, ajax=True,
+            kwargs={'content_type': 'foo', 'object_id': self.gallery.id},
+            message=('Should only be callable, if content type exists.'))
+
+        self.is_not_callable(
+            user=self.gallery.user_connection, ajax=True,
+            kwargs={'content_type': self.content_type, 'object_id': 999},
+            message=('Should only be callable, if content object exists.'))
+
+        self.is_not_callable(
+            user=self.gallery.user_connection, ajax=True,
+            kwargs={'content_type': self.content_type,
+                    'object_id': self.other_gallery.pk},
+            message=('Should only be callable, if the current user owns the'
+                     ' chosen gallery.'))
+
+        self.is_not_callable(
+            user=self.gallery.user_connection, ajax=True,
+            kwargs={
+                'content_type': ContentType.objects.get_for_model(
+                    self.invalid_content_object),
+                'object_id': self.invalid_content_object.pk,
+            },
+            message=("Should only be callable, if the content object is one of"
+                     " the user's items."))
+
+        with self.settings(USER_MEDIA_UPLOAD_MAXIMUM=5):
+            self.upload_to_gallery()
+            self.upload_to_gallery()
+            self.upload_to_gallery()
+            self.upload_to_gallery()
+            self.upload_to_gallery()
+
+            f = open('test_media/img.png')
+            resp = self.is_callable('post', {'image': f}, ajax=True,
+                                    message=('Upload should be valid.'))
+            self.assertEqual(resp.content, 'Maximum amount limit exceeded.',
+                             msg=('Should return an error message.'))
+            f.close()

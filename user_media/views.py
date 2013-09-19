@@ -1,12 +1,18 @@
 """Views for the ``django-user-media`` app."""
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import ObjectDoesNotExist
-from django.http import Http404
+from django.http import Http404, HttpResponse
+from django.template import RequestContext
+from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import CreateView, DeleteView, UpdateView
 
 from django_libs.views_mixins import AjaxResponseMixin
+from easy_thumbnails.files import get_thumbnailer
+from simplejson import dumps
 
 from user_media.forms import UserMediaImageForm
 from user_media.models import UserMediaImage
@@ -192,3 +198,95 @@ class UpdateImageView(AjaxResponseMixin, UserMediaImageViewMixin, UpdateView):
         queryset = super(UpdateImageView, self).get_queryset()
         queryset = queryset.filter(user=self.user)
         return queryset
+
+
+class BulkUploadAJAXView(CreateView):
+    """
+    Ajax view to handle a multiple image upload.
+
+    Prepared for with blueimp's fileupload.
+    http://blueimp.github.io/jQuery-File-Upload/
+
+    Some lines are stolen from https://github.com/bitmazk/django-user-media/
+    -> blob/master/user_media/views.py#L61 to handle the beautiful UserMedia
+    objects.
+
+    """
+    model = UserMediaImage
+    form_class = UserMediaImageForm
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.object_id = kwargs.get('object_id', None)
+        self.user = request.user
+
+        if not request.is_ajax():
+            # Only allow ajax
+            raise Http404
+
+        # Check if the user posted a non existant content type
+        try:
+            self.content_type = ContentType.objects.get(model=kwargs.get(
+                'content_type'))
+        except ContentType.DoesNotExist:
+            raise Http404
+
+        # Check if the content object exists
+        try:
+            self.content_object = self.content_type.get_object_for_this_type(
+                pk=self.object_id)
+        except ObjectDoesNotExist:
+            raise Http404
+
+        # Check for permissions
+        if (not hasattr(self.content_object, 'get_user')
+                or not self.content_object.get_user() == self.user):
+            raise Http404
+        return super(BulkUploadAJAXView, self).dispatch(
+            request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super(BulkUploadAJAXView, self).get_form_kwargs()
+        # Prepare context for UserMediaImage form
+        kwargs.update({
+            'user': self.user,
+            'content_type': self.content_type,
+            'object_id': self.object_id,
+        })
+        return kwargs
+
+    def form_valid(self, form):
+        # Check if maximum amount of pictures has been reached
+        max_pictures = int(self.request.POST.get('maximum', getattr(
+            settings, 'USER_MEDIA_UPLOAD_MAXIMUM', 0)))
+        if (max_pictures != 0
+                and self.user.usermediaimage_set.count() >= max_pictures):
+            return HttpResponse(_('Maximum amount limit exceeded.'))
+
+        # Save the UserMediaImage
+        self.object = form.save()
+        f = self.request.FILES.get('image')
+
+        # Generate and get the thumbnail of the uploaded image
+        thumbnailer = get_thumbnailer(self.object.image.name)
+        thumb = thumbnailer.get_thumbnail({'crop': True, 'upscale': True,
+                                           'size': (50, 50)})
+
+        # Prepare context for the list item html
+        context_data = {
+            'image': self.object,
+            'mode': 'multiple',
+        }
+        context = RequestContext(self.request, context_data)
+
+        # Prepare the json response
+        data = {'files': [{
+            'name': f.name,
+            'url': self.object.image.url,
+            'thumbnail_url': thumb.url,
+            'list_item_html': render_to_string(
+                'user_media/partials/image_loop_item.html', context),
+        }]}
+        response = HttpResponse(dumps(data), mimetype='application/json')
+        response['Content-Disposition'] = 'inline; filename=files.json'
+        return response

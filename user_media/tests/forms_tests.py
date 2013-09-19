@@ -26,7 +26,7 @@ class UserMediaImageFormMixinTestCase(UserMediaImageFormTestCaseMixin,
     """Tests for the ``UserMediaImageFormMixin`` form mixin."""
     def test_mixin(self):
         form = DummyModelForm(self.user,
-            files={'user_media_image': self.uploaded})
+                              files={'user_media_image': self.uploaded})
         self.assertTrue(form.is_valid(), msg=(
             'Should be valid but returned: %s' % form.errors.items()))
         result = form.save()
@@ -38,7 +38,7 @@ class UserMediaImageFormTestCase(UserMediaImageFormMixinTestCase, TestCase):
 
     def test_form(self):
         form = UserMediaImageForm(self.user, None, None,
-            files={'image': self.uploaded})
+                                  files={'image': self.uploaded})
         self.assertTrue(form.is_valid(), msg=(
             'Should be valid but returned: %s' % form.errors.items()))
         result = form.save()

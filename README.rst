@@ -208,6 +208,29 @@ The names of the alternative templates are
 ``user_media/partials/ajax_usermediaimage_confirm_delete.html``.
 
 
+AJAX multi image upload
+-----------------------
+
+If you want to upload multiple images at once, only prepare the following
+templates::
+
+    user_media/partials/image_loop.html
+    user_media/partials/image_loop_item.html
+
+Then add styles and jQuery scripts. We've used blueimp's file upload, so you
+make it work by adding jQuery & jQuery-UI plus the scripts in::
+
+    user_media/partials/image_loop_scripts.html
+
+Don't forget to add the css::
+
+    <link rel="stylesheet" href="{{ STATIC_URL }}user_media/css/libs/jquery.fileupload-ui.css">
+
+You can limit the maximum upload by using the following setting::
+
+    USER_MEDIA_UPLOAD_MAXIMUM = 5
+
+
 Contribute
 ----------
 

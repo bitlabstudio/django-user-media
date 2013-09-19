@@ -1,0 +1,5 @@
+{% load i18n thumbnail %}
+<div class="galleryList">
+    <img src="{% thumbnail image.image 95x95 crop upscale %}" alt="" />
+    <a class="btn btn-danger btn-mini" href="{% url "user_media_image_delete" pk=image.pk %}">{% trans "Delete" %}</a>
+</div>

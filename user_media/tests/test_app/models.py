@@ -6,6 +6,19 @@ from django.contrib.contenttypes import generic
 from django.db import models
 
 
+class DummyGallery(models.Model):
+    """Model to simulate a gallery."""
+    user_connection = models.ForeignKey('auth.User')
+
+    images = generic.GenericRelation(
+        'user_media.UserMediaImage',
+        blank=True, null=True,
+    )
+
+    def get_user(self):
+        return self.user_connection
+
+
 class DummyModel(models.Model):
     """
     Dummy model for tests of the `django-user-media` application.

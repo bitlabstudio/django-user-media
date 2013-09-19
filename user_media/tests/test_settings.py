@@ -4,6 +4,8 @@ import os
 
 PROJECT_ROOT = os.path.dirname(__file__)
 
+DEBUG = True
+SITE_ID = 1
 
 DATABASES = {
     'default': {
@@ -44,6 +46,8 @@ EXTERNAL_APPS = [
     'django.contrib.sites',
     'django_jasmine',
     'django_nose',
+    'easy_thumbnails',
+    'django_libs',
 ]
 
 INTERNAL_APPS = [
@@ -53,3 +57,5 @@ INTERNAL_APPS = [
 
 INSTALLED_APPS = EXTERNAL_APPS + INTERNAL_APPS
 COVERAGE_MODULE_EXCLUDES += EXTERNAL_APPS
+
+SECRET_KEY = 'xxx'

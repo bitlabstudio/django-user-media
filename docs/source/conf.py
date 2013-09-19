@@ -1,3 +1,4 @@
+# flake8: noqa
 # -*- coding: utf-8 -*-
 #
 # django-user-media documentation build configuration file, created by
