@@ -214,21 +214,30 @@ AJAX multi image upload
 If you want to upload multiple images at once, only prepare the following
 templates::
 
-    user_media/partials/image_loop.html
-    user_media/partials/image_loop_item.html
+    user_media/partials/image_upload.html
+    user_media/partials/image.html
 
 Then add styles and jQuery scripts. We've used blueimp's file upload, so you
 make it work by adding jQuery & jQuery-UI plus the scripts in::
 
-    user_media/partials/image_loop_scripts.html
+    user_media/partials/image_upload_scripts.html
 
-Don't forget to add the css::
+Now include the form::
 
-    <link rel="stylesheet" href="{{ STATIC_URL }}user_media/css/libs/jquery.fileupload-ui.css">
+    {% include "user_media/partials/image_upload.html" with object=request.user.get_profile maximum='5' mode="multiple" c_type="profile" %}
 
 You can limit the maximum upload by using the following setting::
 
     USER_MEDIA_UPLOAD_MAXIMUM = 5
+
+
+AJAX single image upload
+------------------------
+
+You can also combine single and multiple uploads. Just use the templates and
+add the wanted variables::
+
+    {% include "user_media/partials/image_upload.html" with object=request.user.get_profile field='logo' mode="single" show_main_thumb="True" %}
 
 
 Contribute

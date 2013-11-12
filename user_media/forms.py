@@ -90,3 +90,10 @@ class UserMediaImageForm(forms.ModelForm):
         self.instance.content_type = self.content_type
         self.instance.object_id = self.object_id
         return super(UserMediaImageForm, self).save(*args, **kwargs)
+
+
+class UserMediaImageSingleUploadForm(forms.ModelForm):
+    """Form to save a single image upload."""
+    def __init__(self, image_field, *args, **kwargs):
+        super(UserMediaImageSingleUploadForm, self).__init__(*args, **kwargs)
+        self.fields[image_field] = forms.ImageField()

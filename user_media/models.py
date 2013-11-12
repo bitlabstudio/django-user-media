@@ -56,6 +56,6 @@ class UserMediaImage(models.Model):
         verbose_name=_('Image'),
     )
 
-    position = models.PositiveIntegerField(
-        blank=True, null=True,
+    generic_position = generic.GenericRelation(
+        'generic_positions.ObjectPosition'
     )

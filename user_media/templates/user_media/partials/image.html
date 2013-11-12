@@ -1,0 +1,10 @@
+{% load i18n position_tags thumbnail %}
+{% if mode == 'multiple' %}
+    <div class="userMediaImage" data-thumbnail-large="{% thumbnail image.image 300x300 crop upscale %}">
+        <img src="{% thumbnail image.image 95x95 crop upscale %}" alt="" data-glisse-big="{{ image.image.url }}" rel="gallery{{ object.id }}" />
+        <a class="btn btn-danger btn-xs" href="{% url "user_media_image_delete" pk=image.pk %}">{% trans "Delete" %}</a>
+        {% position_input image %}
+    </div>
+{% elif mode == 'single' %}
+    <img src="{% thumbnail image size crop upscale %}" alt="" />
+{% endif %}

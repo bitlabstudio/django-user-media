@@ -1,0 +1,84 @@
+{% load i18n position_tags thumbnail position_tags libs_tags %}
+{% if show_main_thumb %}
+    <div class="thumbnailWrapper">
+        <div class="thumbnail userMediaImageUploaded">
+            <img src="{{ object.get_main_picture }}" alt="" />
+        </div>
+    </div>
+{% endif %}
+<div class="row">
+    <div class="col-md-3">
+        <form id="fileupload" action="{% if mode == 'single' %}{% url "user_media_ajax_single_upload" c_type=c_type obj_id=object.pk field=field %}{% else %}{% url "user_media_ajax_multiple_upload" c_type=c_type obj_id=object.pk %}{% endif %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% if size %}<input type="hidden" name="size" value="{{ size }}" />{% endif %}
+            <div class="fileupload-buttonbar">
+                {% if mode == 'single' %}
+                    <span class="btn btn-success fileinput-button">
+                        <span class="glyphicon glyphicon-plus"></span> {% trans "Upload new logo" %}
+                        <input type="file" name="{{ field }}" />
+                    </span>
+                {% else %}
+                    <span class="btn btn-success fileinput-button">
+                        <span class="glyphicon glyphicon-plus"></span> {% trans "Upload images" %}
+                        <input type="file" name="image" multiple />
+                    </span>
+                    <input type="hidden" name="maximum" id="userMediaImageMaximum" value="{{ maximum }}" />
+                {% endif %}
+            </div>
+        </form>
+        <div id="userMediaImageProcess"></div>
+    </div>
+    {% if mode == 'multiple' %}
+        <div class="col-md-8">
+            <span class="text-muted"><small>{% blocktrans %}Maximum allowed: {{ maximum }} pictures.{% endblocktrans %}</small></span> <span id="userMediaImageAmountInfo"></span>
+            <form id="positionForm" method="post" action="{% url "position_bulk_update" %}">
+                {% csrf_token %}
+                <div id="positionContainer">
+                    {% if object.images.all %}
+                        {% for image in object.images.all|order_by_position %}
+                            {% include "user_media/partials/image.html" %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    {% endif %}
+</div>
+{% verbatim %}
+    <!-- The template to display files available for upload -->
+    <script id="template-upload" type="text/x-tmpl">
+        {% for (var i=0, file; file=o.files[i]; i++) { %}
+            <div class="template-upload fade thumbnail margin-top-sm">
+                <span class="text-muted"><small>{%=file.name%}</small></span>
+                {% if (file.error) { %}
+                    <span class="label label-danger">{%=file.error%}</span>
+                {% } %}
+                {% if (!o.files.error) { %}
+                    <div class="progress margin-bottom-sm">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0;">
+                            <span class="sr-only"></span>
+                        </div>
+                    </div>
+                {% } %}
+                {% if (!i) { %}
+                    <a href="#" class="btn btn-warning btn-xs cancel">
+                        <span class="glyphicon glyphicon-ban-circle"></span>
+                        <span>{%=locale.fileupload.cancel%}</span>
+                    </a>
+                {% } %}
+            </div>
+        {% } %}
+    </script>
+    <!-- The template to display files available for download -->
+    <script id="template-download" type="text/x-tmpl">
+        {% for (var n=0, file; file=o.files[n]; n++) { %}
+            <div class="template-download fade margin-top-sm">
+                {% if (file.error) { %}
+                    <p class="alert alert-danger">{%=locale.fileupload.error%}</p>
+                {% } else { %}
+                    <p class="alert alert-success">{%=locale.fileupload.success%}</p>
+                {% } %}
+            </div>
+        {% } %}
+    </script>
+{% endverbatim %}

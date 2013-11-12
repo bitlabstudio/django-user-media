@@ -48,6 +48,7 @@ EXTERNAL_APPS = [
     'django_nose',
     'easy_thumbnails',
     'django_libs',
+    'generic_positions',
 ]
 
 INTERNAL_APPS = [

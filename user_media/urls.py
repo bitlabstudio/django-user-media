@@ -2,7 +2,8 @@
 from django.conf.urls import patterns, url
 
 from user_media.views import (
-    BulkUploadAJAXView,
+    AJAXMultipleImageUploadView,
+    AJAXSingleImageUploadView,
     CreateImageView,
     DeleteImageView,
     UpdateImageView,
@@ -23,7 +24,10 @@ urlpatterns = patterns(
     url(r'^image/(?P<pk>\d+)/delete/$',
         DeleteImageView.as_view(),
         name='user_media_image_delete'),
-    url(r'^image/upload/(?P<content_type>[-\w]+)/(?P<object_id>\d+)/$',
-        BulkUploadAJAXView.as_view(),
-        name='user_media_upload_multiple'),
+    url(r'^upload-single/(?P<c_type>[-\w]+)/(?P<obj_id>\d+)/(?P<field>\w+)/$',
+        AJAXSingleImageUploadView.as_view(),
+        name='user_media_ajax_single_upload'),
+    url(r'^upload-multiple/(?P<c_type>[-\w]+)/(?P<obj_id>\d+)/$',
+        AJAXMultipleImageUploadView.as_view(),
+        name='user_media_ajax_multiple_upload'),
 )

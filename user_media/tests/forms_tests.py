@@ -7,8 +7,9 @@ from django.test import TestCase
 
 from django_libs.tests.factories import UserFactory
 
-from user_media.forms import UserMediaImageForm
-from user_media.tests.test_app.forms import DummyModelForm
+from ..forms import UserMediaImageForm, UserMediaImageSingleUploadForm
+from .test_app.forms import DummyModelForm
+from .factories import DummyModelFactory
 
 
 class UserMediaImageFormTestCaseMixin(object):
@@ -43,3 +44,13 @@ class UserMediaImageFormTestCase(UserMediaImageFormMixinTestCase, TestCase):
             'Should be valid but returned: %s' % form.errors.items()))
         result = form.save()
         self.assertTrue('.png' in result.image.url)
+
+
+class UserMediaImageSingleUploadFormTestCase(TestCase):
+    """Tests for the ``UserMediaImageSingleUploadForm`` model."""
+    longMessage = True
+
+    def test_form(self):
+        form = UserMediaImageSingleUploadForm(
+            instance=DummyModelFactory(), image_field='image', data={})
+        self.assertFalse(form.is_valid())

@@ -212,78 +212,136 @@ class EditImageViewTestCase(ViewTestMixin, EditAndDeleteTestCaseMixin,
         return {'pk': self.image.pk}
 
 
-class UserMediaUploadAJAXViewTestCase(ViewTestMixin, TestCase):
-    """Tests for the ``UserMediaUploadAJAXView`` generic view class."""
+class AJAXMultipleImageUploadViewTestCase(ViewTestMixin, TestCase):
+    """Tests for the ``AJAXMultipleImageUploadView`` generic view class."""
     longMessage = True
 
     def setUp(self):
-        self.gallery = DummyGalleryFactory()
-        self.other_gallery = DummyGalleryFactory()
+        self.profile = DummyModelFactory()
+        self.other_profile = DummyModelFactory()
         self.invalid_content_object = UserFactory()
-        self.content_type = ContentType.objects.get_for_model(
-            self.gallery).model
+        self.c_type = ContentType.objects.get_for_model(self.profile).model
 
     def get_view_name(self):
-        return 'user_media_upload_multiple'
+        return 'user_media_ajax_multiple_upload'
 
     def get_view_kwargs(self):
-        return {
-            'content_type': self.content_type,
-            'object_id': self.gallery.id,
-        }
+        return {'c_type': self.c_type, 'obj_id': self.profile.id}
 
     def upload_to_gallery(self):
-        f = open('test_media/img.png')
-        kwargs = {
-            'content_type': self.content_type,
-            'object_id': self.gallery.id,
-        }
+        f = open(os.path.join(settings.PROJECT_ROOT, 'test_media/img.png'))
+        kwargs = {'c_type': self.c_type, 'obj_id': self.profile.id}
         self.is_callable('post', {'image': f}, ajax=True, kwargs=kwargs,
                          message=('Upload should be valid.'))
         f.close()
 
     def test_view(self):
         self.is_not_callable()
-        self.is_not_callable(user=self.gallery.user_connection,
+        self.is_not_callable(user=self.profile.user,
                              message=('Should only be callable via AJAX.'))
 
         self.is_not_callable(
-            user=self.gallery.user_connection, ajax=True,
-            kwargs={'content_type': 'foo', 'object_id': self.gallery.id},
+            user=self.profile.user, ajax=True,
+            kwargs={'c_type': 'foo', 'obj_id': self.profile.id},
             message=('Should only be callable, if content type exists.'))
 
         self.is_not_callable(
-            user=self.gallery.user_connection, ajax=True,
-            kwargs={'content_type': self.content_type, 'object_id': 999},
+            user=self.profile.user, ajax=True,
+            kwargs={'c_type': self.c_type, 'obj_id': 999},
             message=('Should only be callable, if content object exists.'))
 
         self.is_not_callable(
-            user=self.gallery.user_connection, ajax=True,
-            kwargs={'content_type': self.content_type,
-                    'object_id': self.other_gallery.pk},
+            user=self.profile.user, ajax=True,
+            kwargs={'c_type': self.c_type, 'obj_id': self.other_profile.pk},
             message=('Should only be callable, if the current user owns the'
-                     ' chosen gallery.'))
+                     ' chosen profile.'))
 
         self.is_not_callable(
-            user=self.gallery.user_connection, ajax=True,
+            user=self.profile.user, ajax=True,
             kwargs={
-                'content_type': ContentType.objects.get_for_model(
+                'c_type': ContentType.objects.get_for_model(
                     self.invalid_content_object),
-                'object_id': self.invalid_content_object.pk,
+                'obj_id': self.invalid_content_object.pk
             },
             message=("Should only be callable, if the content object is one of"
                      " the user's items."))
 
-        with self.settings(USER_MEDIA_UPLOAD_MAXIMUM=5):
-            self.upload_to_gallery()
-            self.upload_to_gallery()
-            self.upload_to_gallery()
-            self.upload_to_gallery()
-            self.upload_to_gallery()
+        self.upload_to_gallery()
+        self.upload_to_gallery()
+        self.upload_to_gallery()
+        self.upload_to_gallery()
+        self.upload_to_gallery()
 
-            f = open('test_media/img.png')
-            resp = self.is_callable('post', {'image': f}, ajax=True,
-                                    message=('Upload should be valid.'))
-            self.assertEqual(resp.content, 'Maximum amount limit exceeded.',
-                             msg=('Should return an error message.'))
-            f.close()
+        f = open(os.path.join(settings.PROJECT_ROOT, 'test_media/img.png'))
+        resp = self.is_callable('post', {'image': f}, ajax=True,
+                                message=('Upload should be valid.'))
+        self.assertEqual(resp.content, 'Maximum amount limit exceeded.', msg=(
+            'Should return an error message.'))
+        f.close()
+
+
+class AJAXSingleImageUploadViewTestCase(ViewTestMixin, TestCase):
+    """Tests for the ``AJAXSingleImageUploadView`` generic view class."""
+    longMessage = True
+
+    def setUp(self):
+        self.gallery = DummyGalleryFactory()
+        self.other_gallery = DummyGalleryFactory()
+        self.invalid_content_object = UserFactory()
+        self.c_type = ContentType.objects.get_for_model(self.gallery).model
+
+    def get_view_name(self):
+        return 'user_media_ajax_single_upload'
+
+    def get_view_kwargs(self):
+        return {
+            'c_type': self.c_type,
+            'obj_id': self.gallery.id,
+            'field': 'logo',
+        }
+
+    def test_view(self):
+        self.is_not_callable()
+        self.is_not_callable(method='post', user=self.gallery.user_connection,
+                             message=('Should only be callable via AJAX.'))
+
+        new_kwargs = {
+            'c_type': 'foo',
+            'obj_id': self.gallery.id,
+            'field': 'logo',
+        }
+        self.is_not_callable(
+            ajax=True, method='post', kwargs=new_kwargs,
+            message=('Should only be callable, if content type exists.'))
+
+        new_kwargs = {
+            'c_type': self.c_type,
+            'obj_id': self.gallery.id,
+            'field': 'foobar',
+        }
+        self.is_not_callable(
+            ajax=True, method='post', kwargs=new_kwargs,
+            message=('Should only be callable, if field exists.'))
+
+        new_kwargs = {
+            'c_type': self.c_type,
+            'obj_id': '999',
+            'field': 'logo',
+        }
+        self.is_not_callable(
+            ajax=True, method='post', kwargs=new_kwargs,
+            message=('Should only be callable, if content object exists.'))
+
+        new_kwargs = {
+            'c_type': self.c_type,
+            'obj_id': self.other_gallery.pk,
+            'field': 'logo',
+        }
+        self.is_not_callable(
+            ajax=True, method='post', kwargs=new_kwargs,
+            message=('Should only be callable, if the current user owns the'
+                     ' chosen vendor.'))
+        f = open(os.path.join(settings.PROJECT_ROOT, 'test_media/img.png'))
+        self.is_callable('post', {'logo': f}, ajax=True, message=(
+            'Upload should be valid.'))
+        f.close()

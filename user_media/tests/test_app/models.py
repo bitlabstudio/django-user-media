@@ -15,7 +15,10 @@ class DummyGallery(models.Model):
         blank=True, null=True,
     )
 
-    def get_user(self):
+    logo = models.ImageField(upload_to='test_logos')
+
+    @property
+    def user(self):
         return self.user_connection
 
 
