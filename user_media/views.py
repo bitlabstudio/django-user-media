@@ -247,7 +247,9 @@ class AJAXMultipleImageUploadView(CreateView):
             max_pictures = int(self.request.POST.get('maximum'))
         except (TypeError, ValueError):
             max_pictures = getattr(settings, 'USER_MEDIA_UPLOAD_MAXIMUM', 3)
-        if self.user.usermediaimage_set.count() >= max_pictures:
+        stored_images = self.user.usermediaimage_set.filter(
+            object_id=self.obj_id, content_type=self.c_type)
+        if stored_images.count() >= max_pictures:
             return HttpResponse(_('Maximum amount limit exceeded.'))
 
         # Save the UserMediaImage

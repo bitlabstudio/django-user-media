@@ -1,5 +1,10 @@
 === (ongoing) ===
 
+=== 0.9.1 ===
+
+- fixed maximum upload amount, if a user has more than one connection to the
+  UserMediaImage model
+
 === 0.9 ===
 
 - fixed form validation bug with Django 1.5
