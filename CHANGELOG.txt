@@ -1,5 +1,9 @@
 === (ongoing) ===
 
+=== 0.9.2 ===
+
+- prepared factories to use latest factory boy
+
 === 0.9.1 ===
 
 - fixed maximum upload amount, if a user has more than one connection to the
