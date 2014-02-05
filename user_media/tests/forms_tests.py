@@ -17,7 +17,7 @@ class UserMediaImageFormTestCaseMixin(object):
     def setUp(self):
         self.user = UserFactory()
         self.test_file = os.path.join(
-            settings.PROJECT_ROOT, 'test_media/img.png')
+            settings.DJANGO_PROJECT_ROOT, 'tests/test_media/img.png')
         self.img = open(self.test_file)
         self.uploaded = SimpleUploadedFile(self.img.name, self.img.read())
 

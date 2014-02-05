@@ -1,5 +1,7 @@
 === (ongoing) ===
 
+- Added Jcrop to select a thumb area
+
 === 0.9.2 ===
 
 - prepared factories to use latest factory boy

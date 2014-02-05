@@ -258,8 +258,10 @@ class AJAXMultipleImageUploadView(CreateView):
 
         # Generate and get the thumbnail of the uploaded image
         thumbnailer = get_thumbnailer(self.object.image.name)
-        thumb = thumbnailer.get_thumbnail({'crop': True, 'upscale': True,
-                                           'size': (50, 50)})
+        thumb = thumbnailer.get_thumbnail({
+            'crop': True, 'upscale': True,
+            'size': self.object.small_size(as_string=False),
+        })
 
         # Prepare context for the list item html
         context_data = {
@@ -307,7 +309,6 @@ class AJAXSingleImageUploadView(FormView):
         # Check if content_object has the requested image field
         if hasattr(self.content_object, kwargs.get('field')):
             self.field_name = kwargs.get('field')
-            self.image_field = getattr(self.content_object, self.field_name)
         else:
             raise Http404
 
@@ -331,17 +332,21 @@ class AJAXSingleImageUploadView(FormView):
         self.content_object = form.save()
         f = self.request.FILES.get(self.field_name)
         image = getattr(self.content_object, self.field_name)
+        size = getattr(settings, 'USER_MEDIA_THUMB_SIZE_LARGE', (150, 150))
 
         # Generate and get the thumbnail of the uploaded image
         thumbnailer = get_thumbnailer(image.name)
-        thumb = thumbnailer.get_thumbnail({'crop': True, 'upscale': True,
-                                           'size': (50, 50)})
+        thumb = thumbnailer.get_thumbnail({
+            'crop': True, 'upscale': True,
+            'size': size,
+        })
 
         # Prepare context for the list item html
         context_data = {
             'image': image,
             'mode': 'single',
-            'size': self.request.POST.get('size') or '150x150',
+            'size': (self.request.POST.get('size')
+                     or u'{}x{}'.format(size[0], size[1])),
         }
         context = RequestContext(self.request, context_data)
 
@@ -355,3 +360,33 @@ class AJAXSingleImageUploadView(FormView):
         response = HttpResponse(dumps(data), mimetype='application/json')
         response['Content-Disposition'] = 'inline; filename=files.json'
         return response
+
+
+class AJAXImageCropView(UserMediaImageViewMixin, UpdateView):
+    """Ajax view to update an image's crop attributes."""
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        if not request.is_ajax() or not request.method == 'POST':
+            raise Http404
+        self.user = request.user
+        self.kwargs = kwargs
+        self.object = self.get_object()
+        if not self.object.user == self.user:
+            raise Http404
+        for field in ['x', 'x2', 'y', 'y2', 'w', 'h']:
+            # Save the Jcrop values to the image
+            setattr(self.object, 'thumb_' + field, request.POST.get(field))
+        self.object.save()
+
+        box = (
+            int(self.object.thumb_x),
+            int(self.object.thumb_y),
+            int(self.object.thumb_x2),
+            int(self.object.thumb_y2),
+        )
+        thumbnailer = get_thumbnailer(self.object.image.name)
+        thumb = thumbnailer.get_thumbnail({
+            'box': box,
+            'size': self.object.small_size(as_string=False),
+        })
+        return HttpResponse(thumb.url)

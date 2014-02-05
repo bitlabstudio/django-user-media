@@ -2,7 +2,8 @@
 import os
 
 
-PROJECT_ROOT = os.path.dirname(__file__)
+DJANGO_PROJECT_ROOT = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '..'))
 
 DEBUG = True
 SITE_ID = 1
@@ -16,11 +17,15 @@ DATABASES = {
 
 ROOT_URLCONF = 'user_media.tests.urls'
 
+MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(__file__, '../../../static/')
-MEDIA_ROOT = os.path.join(__file__, '../../../media/')
+MEDIA_ROOT = os.path.join(DJANGO_PROJECT_ROOT, '../media')
+STATIC_ROOT = os.path.join(DJANGO_PROJECT_ROOT, '../static')
 STATICFILES_DIRS = (
-    os.path.join(__file__, 'test_static'),
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    os.path.join(DJANGO_PROJECT_ROOT, 'static'),
 )
 
 TEMPLATE_DIRS = (
@@ -60,3 +65,11 @@ INSTALLED_APPS = EXTERNAL_APPS + INTERNAL_APPS
 COVERAGE_MODULE_EXCLUDES += EXTERNAL_APPS
 
 SECRET_KEY = 'xxx'
+
+THUMBNAIL_PROCESSORS = (
+    'user_media.processors.crop_box',
+    'easy_thumbnails.processors.colorspace',
+    'easy_thumbnails.processors.autocrop',
+    'easy_thumbnails.processors.scale_and_crop',
+    'easy_thumbnails.processors.filters',
+)

@@ -11,7 +11,7 @@ function initDeletion(body) {
         body.find('.userMediaImage .btn-danger').click(function() {
             var image = $(this).parents('.userMediaImage');
             // Get the modal content
-            $.post($(this).attr('href'), {'csrfmiddlewaretoken': getCSRFToken()}, function(data) {
+            $.post($(this).attr('href'), {'csrfmiddlewaretoken': getCookie('csrftoken')}, function(data) {
                 image.remove();
                 checkImageContainer(body);
             });
@@ -94,3 +94,29 @@ $(document).on('DOMNodeInserted', function(e) {
 }).ready(function() {
     initFileupload($('#fileupload, .multifileupload'), $('body'));
 });
+
+function cropImage(identifier, path, url) {
+    $('<img src="'+ path +'" alt="" />').load(function() {
+        $(this).appendTo('#cropArea');
+        var jcrop_api
+            ,boundx
+            ,boundy;
+
+        $(this).Jcrop({aspectRatio: $('#cropRatio').val()}, function() {
+            // Use the API to get the real image size
+            var bounds = this.getBounds();
+            boundx = bounds[0];
+            boundy = bounds[1];
+            // Store the API in the jcrop_api variable
+            jcrop_api = this;
+        });
+
+        $('#cropSubmit').show().click(function() {
+            $.post(url, $.extend(jcrop_api.tellSelect(), {'csrfmiddlewaretoken': getCookie('csrftoken')}), function(data) {
+                $('#cropSubmit').unbind('click').hide();
+                $('#cropArea').html('');
+                $(identifier).find('img').attr('src', data);
+            });
+        });
+    });
+}

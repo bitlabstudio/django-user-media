@@ -3,17 +3,22 @@
 <html>
 <head>
     <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static "user_media/css/libs/jquery.Jcrop.css" %}" type="text/css" />
 </head>
 <body>
 
-{% if dummy_gallery %}
-    {% include "user_media/partials/image_upload.html" with c_type=gallery_ctype object=dummy_gallery %}
+{% if dummy_gallery and user.is_authenticated %}
+    {% include "user_media/partials/image_upload.html" with c_type=gallery_ctype object=dummy_gallery mode="multiple" %}
+    {% include "user_media/partials/crop.html" %}
+
+    <script src="{% static "django_libs/js/getcookie.js" %}"></script>
     <script src="{% static "user_media/js/libs/jquery-1.9.1.js" %}"></script>
     <script src="{% static "user_media/js/libs/jquery-ui-1.10.3.custom.min.js" %}"></script>
     <script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
     {% include "user_media/partials/image_upload_scripts.html" %}
+    <script src="{% static "user_media/js/libs/jquery.Jcrop.js" %}"></script>
 {% else %}
-    Add a gallery to the database first.
+    Add a gallery to the database first &amp; log in.
 {% endif %}
 
 </body>

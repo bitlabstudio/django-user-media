@@ -3,14 +3,14 @@
 # ===========================================================================
 # Packages essential to this app. Needed by anyone who wants to use this app.
 # ===========================================================================
-Django==1.5.4
-Pillow
-South
-django-libs==1.16
-django-generic-positions==0.1.4
+Django==1.6.1
+Pillow==2.3.0
+South==0.8.4
+django-libs==1.42.1
+django-generic-positions==0.1.6
 Sphinx
 factory_boy>2.0.0
-easy_thumbnails==1.3
+easy_thumbnails==1.4
 simplejson==3.3.0
 
 

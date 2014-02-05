@@ -1,8 +1,9 @@
 {% load i18n position_tags thumbnail %}
 {% if mode == 'multiple' %}
-    <div class="userMediaImage" data-thumbnail-large="{% thumbnail image.image 300x300 crop upscale %}">
-        <img src="{% thumbnail image.image 95x95 crop upscale %}" alt="" data-glisse-big="{{ image.image.url }}" rel="gallery{{ object.id }}" />
+    <div class="userMediaImage" id="userMediaImage{{ image.pk }}" data-thumbnail-large="{% thumbnail image.image 300x300 crop upscale %}">
+        <img src="{% if image.box_coordinates %}{% thumbnail image.image image.small_size box=image.box_coordinates %}{% else %}{% thumbnail image.image image.small_size crop upscale %}{% endif %}" alt="" data-glisse-big="{{ image.image.url }}" rel="gallery{{ object.id }}" />
         <a class="btn btn-danger btn-xs" href="{% url "user_media_image_delete" pk=image.pk %}">{% trans "Delete" %}</a>
+        <a class="btn btn-xs" onclick="cropImage('#userMediaImage{{ image.pk }}', '{{ image.image.url }}', '{% url "user_media_image_crop" pk=image.pk %}'); return false;" href="#" >{% trans "Select another cutout" %}</a>
         {% position_input image %}
     </div>
 {% elif mode == 'single' %}

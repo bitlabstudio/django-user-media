@@ -3,6 +3,7 @@ import os
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.core.files import File
 from django.test import TestCase
 
 from django_libs.tests.factories import UserFactory
@@ -41,8 +42,8 @@ class CreateImageViewTestCase(ViewTestMixin, TestCase):
 
     def test_view(self):
         self.should_be_callable_when_authenticated(self.user)
-        test_file = test_file = os.path.join(
-            settings.PROJECT_ROOT, 'test_media/img.png')
+        test_file = os.path.join(
+            settings.DJANGO_PROJECT_ROOT, 'tests/test_media/img.png')
 
         with open(test_file) as fp:
             data = {'image': fp, }
@@ -111,7 +112,7 @@ class CreateImageViewNoCtypeTestCase(ViewTestMixin, TestCase):
     def test_view(self):
         self.should_be_callable_when_authenticated(self.user)
         test_file = test_file = os.path.join(
-            settings.PROJECT_ROOT, 'test_media/img.png')
+            settings.DJANGO_PROJECT_ROOT, 'tests/test_media/img.png')
 
         with open(test_file) as fp:
             data = {'image': fp, 'next': '/?foo=bar'}
@@ -229,7 +230,8 @@ class AJAXMultipleImageUploadViewTestCase(ViewTestMixin, TestCase):
         return {'c_type': self.c_type, 'obj_id': self.profile.id}
 
     def upload_to_gallery(self):
-        f = open(os.path.join(settings.PROJECT_ROOT, 'test_media/img.png'))
+        f = open(os.path.join(
+            settings.DJANGO_PROJECT_ROOT, 'tests/test_media/img.png'))
         kwargs = {'c_type': self.c_type, 'obj_id': self.profile.id}
         self.is_callable('post', {'image': f}, ajax=True, kwargs=kwargs,
                          message=('Upload should be valid.'))
@@ -272,7 +274,8 @@ class AJAXMultipleImageUploadViewTestCase(ViewTestMixin, TestCase):
         self.upload_to_gallery()
         self.upload_to_gallery()
 
-        f = open(os.path.join(settings.PROJECT_ROOT, 'test_media/img.png'))
+        f = open(os.path.join(
+            settings.DJANGO_PROJECT_ROOT, 'tests/test_media/img.png'))
         resp = self.is_callable('post', {'image': f}, ajax=True,
                                 message=('Upload should be valid.'))
         self.assertEqual(resp.content, 'Maximum amount limit exceeded.', msg=(
@@ -304,6 +307,12 @@ class AJAXSingleImageUploadViewTestCase(ViewTestMixin, TestCase):
         self.is_not_callable()
         self.is_not_callable(method='post', user=self.gallery.user_connection,
                              message=('Should only be callable via AJAX.'))
+
+        logo_file = os.path.join(
+            settings.DJANGO_PROJECT_ROOT, 'tests/test_media/logo.png')
+        with open(logo_file) as f:
+            self.is_callable('post', {'logo': f}, ajax=True,
+                             message=('Upload should be valid.'))
 
         new_kwargs = {
             'c_type': 'foo',
@@ -341,7 +350,29 @@ class AJAXSingleImageUploadViewTestCase(ViewTestMixin, TestCase):
             ajax=True, method='post', kwargs=new_kwargs,
             message=('Should only be callable, if the current user owns the'
                      ' chosen vendor.'))
-        f = open(os.path.join(settings.PROJECT_ROOT, 'test_media/img.png'))
-        self.is_callable('post', {'logo': f}, ajax=True, message=(
-            'Upload should be valid.'))
-        f.close()
+
+
+class AJAXImageCropViewTestCase(ViewTestMixin, TestCase):
+    """Tests for the ``AJAXImageCropView`` generic view class."""
+    def setUp(self):
+        self.image = UserMediaImageFactory()
+        self.image2 = UserMediaImageFactory()
+
+    def get_view_name(self):
+        return 'user_media_image_crop'
+
+    def get_view_kwargs(self):
+        return {'pk': self.image.pk}
+
+    def test_view(self):
+        logo_file = os.path.join(
+            settings.DJANGO_PROJECT_ROOT, 'tests/test_media/logo.png')
+        with open(logo_file) as f:
+            self.image.image.save(logo_file, File(f))
+            self.image.save()
+        self.is_not_callable()
+        self.is_not_callable(user=self.image.user)
+        data = {'x': 10, 'x2': 15, 'y': 2, 'y2': 10, 'w': 5, 'h': 8}
+        self.is_callable(user=self.image.user, method='post', data=data,
+                         ajax=True)
+        self.is_not_callable(user=self.image2.user, method='post', ajax=True)

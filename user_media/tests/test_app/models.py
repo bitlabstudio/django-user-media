@@ -21,6 +21,9 @@ class DummyGallery(models.Model):
     def user(self):
         return self.user_connection
 
+    def get_absolute_url(self):
+        return '/'
+
 
 class DummyModel(models.Model):
     """

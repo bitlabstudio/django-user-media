@@ -240,6 +240,64 @@ add the wanted variables::
     {% include "user_media/partials/image_upload.html" with object=request.user.get_profile field='logo' mode="single" show_main_thumb="True" %}
 
 
+jQuery image cropping
+---------------------
+
+You can easily add a frontend image cropping. First of all, add a new thumbnail
+processor ``user_media.processors.crop_box``::
+
+    THUMBNAIL_PROCESSORS = (
+        'user_media.processors.crop_box',
+        ...
+        'easy_thumbnails.processors.colorspace',
+        'easy_thumbnails.processors.autocrop',
+        'easy_thumbnails.processors.scale_and_crop',
+        'easy_thumbnails.processors.filters',
+    )
+
+Then add the cropping template and the relevant js libraries::
+
+    {% include "user_media/partials/crop.html" %}
+
+    <script src="{% static "django_libs/js/getcookie.js" %}"></script>
+    <script src="{% static "user_media/js/libs/jquery.Jcrop.js" %}"></script>
+
+You can modify the settings by overwriting the input fields in ``crop.html``.
+
+Check out: http://deepliquid.com/content/Jcrop.html
+
+Now, if a user clicks on ``Select another cutout``, the original image will be
+pushed into the crop area, where the user is able to select a frame. If she
+then saves the cropped area, the coordinates will be saved to the
+``UserMediaImage`` instance.
+
+By using the new thumbnail processor it's easy to use this coordinates to
+generate thumbnails::
+
+    {% thumbnail image.image image.small_size box=image.box_coordinates %}
+
+
+Settings
+--------
+
+USER_MEDIA_THUMB_SIZE_SMALL
++++++++++++++++++++++++++++
+
+Default: (95, 95)
+
+Size of the small auto-generated thumbnails, which are processed after
+upload/cropping.
+
+
+USER_MEDIA_THUMB_SIZE_LARGE
++++++++++++++++++++++++++++
+
+Default: (150, 150)
+
+Size of the large auto-generated thumbnails, which are processed after
+upload/cropping.
+
+
 Contribute
 ----------
 

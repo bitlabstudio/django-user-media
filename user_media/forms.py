@@ -62,7 +62,7 @@ class UserMediaImageForm(forms.ModelForm):
     """Form that allows to create or update an `UserMediaImage` object."""
     class Meta:
         model = UserMediaImage
-        fields = ('image',)
+        fields = ('image', )
 
     def __init__(self, user, content_type, object_id, *args, **kwargs):
         self.user = user
@@ -95,5 +95,6 @@ class UserMediaImageForm(forms.ModelForm):
 class UserMediaImageSingleUploadForm(forms.ModelForm):
     """Form to save a single image upload."""
     def __init__(self, image_field, *args, **kwargs):
+        self._meta.model = type(kwargs['instance'])
         super(UserMediaImageSingleUploadForm, self).__init__(*args, **kwargs)
         self.fields[image_field] = forms.ImageField()
