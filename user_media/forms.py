@@ -68,6 +68,8 @@ class UserMediaImageForm(forms.ModelForm):
         self.user = user
         self.content_type = content_type
         self.object_id = object_id
+        self.content_object = content_type.get_object_for_this_type(
+            pk=self.object_id)
         super(UserMediaImageForm, self).__init__(*args, **kwargs)
 
     def clean_image(self):
