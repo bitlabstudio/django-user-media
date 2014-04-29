@@ -298,6 +298,14 @@ Size of the large auto-generated thumbnails, which are processed after
 upload/cropping.
 
 
+USER_MEDIA_UPLOAD_MAXIMUM
++++++++++++++++++++++++++
+
+Default: 3
+
+Amount of images to be uploaded at a maximum.
+
+
 Contribute
 ----------
 
