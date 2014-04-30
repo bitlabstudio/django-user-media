@@ -225,9 +225,13 @@ class AJAXMultipleImageUploadView(CreateView):
             raise Http404
 
         # Check for permissions
+        # Add a single user to the content object or prepare a user_can_edit
+        # function.
         if (not hasattr(self.content_object, 'user')
                 or not self.content_object.user == self.user):
-            raise Http404
+            if (not hasattr(self.content_object, 'user_can_edit')
+                    or not self.content_object.user_can_edit(self.user)):
+                raise Http404
         return super(AJAXMultipleImageUploadView, self).dispatch(
             request, *args, **kwargs)
 
@@ -315,7 +319,9 @@ class AJAXSingleImageUploadView(FormView):
         # Check for permissions
         if (not hasattr(self.content_object, 'user')
                 or not self.content_object.user == self.user):
-            raise Http404
+            if (not hasattr(self.content_object, 'user_can_edit')
+                    or not self.content_object.user_can_edit(self.user)):
+                raise Http404
         return super(AJAXSingleImageUploadView, self).dispatch(
             request, *args, **kwargs)
 

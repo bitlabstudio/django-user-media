@@ -1,5 +1,7 @@
 === (ongoing) ===
 
+- Improved permission handle in ajax views
+
 === 0.11 ===
 
 - Added content_object to form so that you can use it in the form template,

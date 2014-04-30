@@ -207,6 +207,24 @@ The names of the alternative templates are
 ``user_media/partials/ajax_usermediaimage_form.html`` and
 ``user_media/partials/ajax_usermediaimage_confirm_delete.html``.
 
+Make sure to add a user field to the object::
+
+    user = models.ForeignKey(
+        'auth.User',
+        verbose_name=_('User'),
+    )
+
+Alternatively you can add a function called ``user_can_edit``:
+
+    def user_can_edit(self, user):
+        """
+        Function, which returns True if the user is allowed edit the instance.
+
+        """
+        if user in self.users.all():
+            return True
+        return False
+
 
 AJAX multi image upload
 -----------------------
