@@ -1,5 +1,7 @@
 === (ongoing) ===
 
+=== 0.11.1 ===
+
 - Improved permission handle in ajax views
 
 === 0.11 ===
