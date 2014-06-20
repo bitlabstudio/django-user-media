@@ -51,6 +51,7 @@ Add the app to your ``INSTALLED_APPS``::
     INSTALLED_APPS = [
         ...
         'user_media',
+        'generic_positions',
     ]
 
 Hook the app into your main ``urls.py``::
