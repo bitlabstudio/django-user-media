@@ -1,5 +1,7 @@
 === (ongoing) ===
 
+- Allowing variable field name for UserMediaImageFormMixin
+
 === 0.11.1 ===
 
 - Improved permission handle in ajax views

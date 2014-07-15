@@ -23,14 +23,18 @@ class UserMediaImageFormMixin(object):
     upload, all other images of that content object will be deleted before the
     new image will be saved.
 
+    The field name of the ImageField can be overridden by setting
+    ``image_field_name`` on the form, that includes this mixin.
+
     """
 
     image_label = _('Image')
     require_user_media_image = False
+    image_field_name = 'user_media_image'
 
     def __init__(self, *args, **kwargs):
         super(UserMediaImageFormMixin, self).__init__(*args, **kwargs)
-        self.fields['user_media_image'] = forms.ImageField(
+        self.fields[self.image_field_name] = forms.ImageField(
             required=self.require_user_media_image,
             label=self.image_label,
         )
@@ -45,7 +49,7 @@ class UserMediaImageFormMixin(object):
 
     def save(self, *args, **kwargs):
         instance = super(UserMediaImageFormMixin, self).save(*args, **kwargs)
-        umedia_image = self.cleaned_data['user_media_image']
+        umedia_image = self.cleaned_data[self.image_field_name]
         if umedia_image:
             self._delete_images(instance)
             image = UserMediaImage()

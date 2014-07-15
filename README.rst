@@ -189,6 +189,7 @@ object. In this case you can inherit from `UserMediaImageFormMixin`::
     class UserProfileForm(UserMediaImageFormMixin, forms.ModelForm):
         image_label = _('Image')
         require_user_media_image = False
+        image_field_name = 'user_media_image'
 
         # your form implementation
 
@@ -215,7 +216,7 @@ Make sure to add a user field to the object::
         verbose_name=_('User'),
     )
 
-Alternatively you can add a function called ``user_can_edit``:
+Alternatively you can add a function called ``user_can_edit``: ::
 
     def user_can_edit(self, user):
         """
