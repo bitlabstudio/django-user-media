@@ -1,5 +1,8 @@
 === (ongoing) ===
 
+
+=== 0.11.2 ===
+
 - Allowing variable field name for UserMediaImageFormMixin
 
 === 0.11.1 ===
