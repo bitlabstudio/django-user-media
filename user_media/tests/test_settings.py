@@ -1,6 +1,8 @@
 """Settings that need to be set in order to run the tests."""
+import logging
 import os
 
+logging.getLogger("factory").setLevel(logging.WARN)
 
 DJANGO_PROJECT_ROOT = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..'))
