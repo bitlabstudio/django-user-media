@@ -9,7 +9,9 @@ from django.db import models
 
 class DummyGallery(models.Model):
     """Model to simulate a gallery."""
-    user_connection = models.ForeignKey(getattr(settings, 'AUTH_USER_MODEL', 'auth.User'))
+    user_connection = models.ForeignKey(
+        getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
+    )
 
     images = generic.GenericRelation(
         'user_media.UserMediaImage',
