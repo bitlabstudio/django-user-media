@@ -42,7 +42,7 @@ class UserMediaImage(models.Model):
 
     """
     user = models.ForeignKey(
-        'auth.User',
+        getattr(settings, 'AUTH_USER_MODEL', 'auth.User'),
         verbose_name=_('User'),
     )
 
