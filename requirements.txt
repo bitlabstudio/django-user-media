@@ -3,10 +3,10 @@
 # ===========================================================================
 # Packages essential to this app. Needed by anyone who wants to use this app.
 # ===========================================================================
-Django==1.6.1
-Pillow==2.3.0
-South==0.8.4
-django-libs==1.42.1
+Django==1.6.5
+Pillow==2.5.1
+South==1.0
+django-libs==1.59.3
 django-generic-positions==0.1.6
 Sphinx
 factory_boy>2.0.0
@@ -21,5 +21,5 @@ nose
 django-nose
 coverage
 django-coverage
-flake8==2.1.0
-ipdb==0.7
+flake8==2.2.2
+ipdb==0.8

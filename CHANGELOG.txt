@@ -1,5 +1,7 @@
 === (ongoing) ===
 
+- Requirements update
+- Custom user model integration
 
 === 0.11.2 ===
 

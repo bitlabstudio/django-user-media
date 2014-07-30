@@ -83,7 +83,9 @@ model::
 
     class UserProfile(models.Model):
         ...
-        user = models.ForeignKey('auth.User')
+        user = models.ForeignKey(
+            getattr(settings, 'AUTH_USER_MODEL', 'auth.User'),
+        )
 
         avatar = generic.GenericRelation(
             'user_media.UserMediaImage',
@@ -212,7 +214,7 @@ The names of the alternative templates are
 Make sure to add a user field to the object::
 
     user = models.ForeignKey(
-        'auth.User',
+        getattr(settings, 'AUTH_USER_MODEL', 'auth.User'),
         verbose_name=_('User'),
     )
 

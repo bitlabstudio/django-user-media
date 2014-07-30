@@ -23,8 +23,8 @@ class UserMediaImage(models.Model):
 
     If the image belongs to a certain object that is owned by the user, it
     can be tied to that object using the generic foreign key. That object
-    must have a foreign key to ``auth.User`` and that field must be called
-    ``user``.
+    must have a foreign key to ``auth.User`` (or another user model) and that
+    field must be called ``user``.
 
     :user: The user this image belongs to.
     :content_type: If this image belongs to a certain object (i.e. a Vehicle),
