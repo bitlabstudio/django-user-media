@@ -1,5 +1,6 @@
-{% load i18n %}
+{% load i18n thumbnail %}
 <p>{% trans "Are you sure you want to delete this image?" %}</p>
+<img src="{% thumbnail object.image 200x200 crop %}" alt="" />
 <form method="post" action=".">
     <fieldset>
         {% csrf_token %}
