@@ -1,5 +1,8 @@
 === (ongoing) ===
 
+- Media files (and their thumbnails) are deleted, if an UserMediaImage is
+  deleted.
+
 === 1.0 ===
 
 - Requirements update

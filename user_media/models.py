@@ -1,4 +1,5 @@
 """Models for the ``django-user-media`` app."""
+import glob
 import os
 import uuid
 
@@ -6,6 +7,8 @@ from django.conf import settings
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -122,3 +125,19 @@ class UserMediaImage(models.Model):
         if as_string:
             return u'{}x{}'.format(size[0], size[1])
         return size
+
+
+@receiver(post_delete, sender=UserMediaImage)
+def image_post_delete_handler(sender, instance, **kwargs):
+    """
+    Makes sure that a an image is also deleted from the media directory.
+
+    This should prevent a load of "dead" image files on disc.
+
+    """
+    for fl in glob.glob('{}/{}*'.format(instance.image.storage.location,
+                                        instance.image.name)):
+        try:
+            os.remove(fl)
+        except OSError:
+            pass
