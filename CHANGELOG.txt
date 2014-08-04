@@ -1,5 +1,7 @@
 === (ongoing) ===
 
+=== 1.1.1 ===
+
 - Fixed image deletion for third party storages
 
 === 1.1 ===
