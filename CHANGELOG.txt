@@ -1,5 +1,7 @@
 === (ongoing) ===
 
+- Fixed image deletion for third party storages
+
 === 1.1 ===
 
 - Media files (and their thumbnails) are deleted, if an UserMediaImage is

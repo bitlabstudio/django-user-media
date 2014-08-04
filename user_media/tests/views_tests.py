@@ -138,7 +138,11 @@ class EditAndDeleteTestCaseMixin(object):
         self.user = self.dummy.user
         self.image = UserMediaImageFactory(user=self.user)
         self.image.content_object = self.dummy
-        self.image.save()
+        logo_file = os.path.join(
+            settings.DJANGO_PROJECT_ROOT, 'tests/test_media/logo.png')
+        with open(logo_file) as f:
+            self.image.image.save(logo_file, File(f))
+            self.image.save()
         self.image_no_content_object = UserMediaImageFactory(user=self.user)
         self.other_image = UserMediaImageFactory()
 

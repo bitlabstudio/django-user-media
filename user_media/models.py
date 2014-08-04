@@ -135,9 +135,7 @@ def image_post_delete_handler(sender, instance, **kwargs):
     This should prevent a load of "dead" image files on disc.
 
     """
-    for fl in glob.glob('{}/{}*'.format(instance.image.storage.location,
-                                        instance.image.name)):
-        try:
-            os.remove(fl)
-        except OSError:
-            pass
+    for f in glob.glob('{}/{}*'.format(instance.image.storage.location,
+                                       instance.image.name)):
+        if not os.path.isdir(f):
+            instance.image.storage.delete(f)
