@@ -59,7 +59,12 @@ function initFileupload(objects, body) {
                     body.find('#positionContainer').append($.parseHTML(data.result.files[0].list_item_html)).show();
                 } else {
                     // If it's a single image, change the image src after upload
-                    body.find('.userMediaImageUploaded img').replaceWith($.parseHTML(data.result.files[0].list_item_html));
+                    var extra_classes = body.find('.userMediaImageUploaded').attr('data-img-class');
+                    var $new_image = $(data.result.files[0].list_item_html);
+                    if (extra_classes) {
+                        $new_image.addClass(extra_classes);
+                    }
+                    body.find('.userMediaImageUploaded img').replaceWith($new_image);
                 }
                 body.find('#userMediaImageAmountInfo .text-danger').remove();
                 setTimeout(function() {

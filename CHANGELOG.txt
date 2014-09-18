@@ -1,8 +1,9 @@
 === (ongoing) ===
 
-=== 1.1.1 ===
+=== 1.1.X ===
 
 - Fixed image deletion for third party storages
+- added data-img-class attribute on the userMediaImageUploaded element
 
 === 1.1 ===
 
