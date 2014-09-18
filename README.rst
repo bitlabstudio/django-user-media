@@ -264,13 +264,13 @@ add the wanted variables::
 Extra classes for newly loaded image
 ------------------------------------
 
-If you are using the single image upload, your newly uploaded image will be
-replace the current img-element in your `userMediaImageUploaded`-element.
+If you are using the single image upload, your newly uploaded image will
+replace the current `img`-element in your `userMediaImageUploaded`-element.
 Sometimes you might have special CSS classes on your images and you might want
-to add those classes again to the img that has just been added to the DOM.
-In order to define the classes that should be added to newly loaded images,
-just add the `data-img-class="myclass1 myclass2"` attribute to the element that
-has the `userMediaImageUploaded` class.
+to add those classes again to the `img` that has just been added to the DOM. In
+order to define the classes that should be added to newly loaded image, just
+add the `data-img-class="myclass1 myclass2"` attribute to the element that has
+the `userMediaImageUploaded` class.
 
 jQuery image cropping
 ---------------------
