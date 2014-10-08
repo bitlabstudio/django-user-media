@@ -30,6 +30,7 @@ Prerequisites
 You need at least the following packages in your virtualenv:
 
 * Django 1.4
+* django-libs
 * South
 
 TODO: Test if this really is all we need

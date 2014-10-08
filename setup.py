@@ -26,6 +26,7 @@ setup(
     install_requires=[
         'django',
         'django-generic-positions',
+        'django-libs',
         'simplejson',
     ],
 )
