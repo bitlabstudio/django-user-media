@@ -103,7 +103,12 @@ class UserMediaImage(models.Model):
     @property
     def box_coordinates(self):
         """Returns a thumbnail's coordinates."""
-        if self.thumb_x and self.thumb_y and self.thumb_x2 and self.thumb_y2:
+        if (
+            self.thumb_x is not None and
+            self.thumb_y is not None and
+            self.thumb_x2 is not None and
+            self.thumb_y2 is not None
+        ):
             return (
                 int(self.thumb_x),
                 int(self.thumb_y),
