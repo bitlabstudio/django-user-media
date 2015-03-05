@@ -247,7 +247,10 @@ make it work by adding jQuery & jQuery-UI plus the scripts in::
 
 Now include the form::
 
-    {% include "user_media/partials/image_upload.html" with object=request.user.get_profile maximum='5' mode="multiple" c_type="profile" %}
+    {% include "user_media/partials/image_upload.html" with object=request.user.get_profile maximum='5' hide_cutout='0' mode="multiple" c_type="profile" %}
+
+You can use the variable `hide_cutout="0"` to hide the link that triggers the
+jQuery crop functionality.
 
 You can limit the maximum upload by using the following setting::
 

@@ -6,6 +6,7 @@
 - Fixed migrations to make use of a custom user model
 - Fixed image deletion for third party storages
 - added data-img-class attribute on the userMediaImageUploaded element
+- added hide_cutout variable to hide jQuery crop trigger link
 
 === 1.1 ===
 
