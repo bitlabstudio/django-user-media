@@ -8,6 +8,6 @@ else:
 
 USER_MODEL = {
     'orm_label': '%s.%s' % (User._meta.app_label, User._meta.object_name),
-    'model_label': '%s.%s' % (User._meta.app_label, User._meta.module_name),
+    'model_label': '%s.%s' % (User._meta.app_label, User._meta.model_name),
     'object_name': User.__name__,
 }
