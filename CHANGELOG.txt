@@ -1,5 +1,7 @@
 === (ongoing) ===
 
+=== 1.2.X ===
+
 - Added widget attribute to form mixin
 - Replaced factory boy with mixer
 - Optimized app for Django 1.8
