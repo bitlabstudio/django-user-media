@@ -188,6 +188,7 @@ object. In this case you can inherit from `UserMediaImageFormMixin`::
         image_label = _('Image')
         require_user_media_image = False
         image_field_name = 'user_media_image'
+        image_widget = forms.ClearableFileInput()  # optional
 
         # your form implementation
 

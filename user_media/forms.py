@@ -31,6 +31,7 @@ class UserMediaImageFormMixin(object):
     image_label = _('Image')
     require_user_media_image = False
     image_field_name = 'user_media_image'
+    image_widget = forms.ClearableFileInput()
 
     def __init__(self, *args, **kwargs):
         super(UserMediaImageFormMixin, self).__init__(*args, **kwargs)
@@ -44,6 +45,7 @@ class UserMediaImageFormMixin(object):
             required=self.require_user_media_image,
             label=self.image_label,
             initial=initial_image,
+            widget=self.image_widget,
         )
 
     def _delete_images(self, instance):
