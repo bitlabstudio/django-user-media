@@ -1,7 +1,10 @@
 *.egg-info/
+*.eggs/
 *.pyc
-/media/
+*coverage/
 db.sqlite
+build/
 dist/
-docs/build/
-user_media/tests/coverage/
+.coverage
+*media/
+*.tox/

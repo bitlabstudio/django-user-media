@@ -1,76 +1,36 @@
-# flake8: noqa
 # -*- coding: utf-8 -*-
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
-from ..compat import USER_MODEL
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+from django.conf import settings
+import user_media.models
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'UserMediaImage'
-        db.create_table('user_media_usermediaimage', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm[USER_MODEL['orm_label']])),
-            ('content_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['contenttypes.ContentType'], null=True, blank=True)),
-            ('object_id', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
-            ('image', self.gf('django.db.models.fields.files.FileField')(max_length=100, null=True, blank=True)),
-        ))
-        db.send_create_signal('user_media', ['UserMediaImage'])
+    dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('contenttypes', '0001_initial'),
+    ]
 
-
-    def backwards(self, orm):
-        # Deleting model 'UserMediaImage'
-        db.delete_table('user_media_usermediaimage')
-
-
-    models = {
-        'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        'auth.permission': {
-            'Meta': {'ordering': "('content_type__app_label', 'content_type__model', 'codename')", 'unique_together': "(('content_type', 'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        USER_MODEL['model_label']: {
-            'Meta': {'object_name': USER_MODEL['object_name']},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'user_media.usermediaimage': {
-            'Meta': {'object_name': 'UserMediaImage'},
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']", 'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'image': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'object_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['%s']" % USER_MODEL['orm_label']})
-        }
-    }
-
-    complete_apps = ['user_media']
+    operations = [
+        migrations.CreateModel(
+            name='UserMediaImage',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('object_id', models.PositiveIntegerField(null=True, blank=True)),
+                ('image', models.ImageField(upload_to=user_media.models.get_image_file_path, null=True, verbose_name='Image', blank=True)),
+                ('thumb_x', models.PositiveIntegerField(null=True, verbose_name='Thumbnail x', blank=True)),
+                ('thumb_x2', models.PositiveIntegerField(null=True, verbose_name='Thumbnail x2', blank=True)),
+                ('thumb_y', models.PositiveIntegerField(null=True, verbose_name='Thumbnail y', blank=True)),
+                ('thumb_y2', models.PositiveIntegerField(null=True, verbose_name='Thumbnail y2', blank=True)),
+                ('thumb_w', models.PositiveIntegerField(null=True, verbose_name='Thumbnail width', blank=True)),
+                ('thumb_h', models.PositiveIntegerField(null=True, verbose_name='Thumbnail height', blank=True)),
+                ('content_type', models.ForeignKey(blank=True, to='contenttypes.ContentType', null=True)),
+                ('user', models.ForeignKey(verbose_name='User', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+    ]

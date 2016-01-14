@@ -227,10 +227,10 @@ class AJAXMultipleImageUploadView(CreateView):
         # Check for permissions
         # Add a single user to the content object or prepare a user_can_edit
         # function.
-        if (not hasattr(self.content_object, 'user')
-                or not self.content_object.user == self.user):
-            if (not hasattr(self.content_object, 'user_can_edit')
-                    or not self.content_object.user_can_edit(self.user)):
+        if (not hasattr(self.content_object, 'user') or not
+                self.content_object.user == self.user):
+            if (not hasattr(self.content_object, 'user_can_edit') or not
+                    self.content_object.user_can_edit(self.user)):
                 raise Http404
         return super(AJAXMultipleImageUploadView, self).dispatch(
             request, *args, **kwargs)
@@ -282,7 +282,7 @@ class AJAXMultipleImageUploadView(CreateView):
             'list_item_html': render_to_string(
                 'user_media/partials/image.html', context),
         }]}
-        response = HttpResponse(dumps(data), mimetype='application/json')
+        response = HttpResponse(dumps(data), content_type='application/json')
         response['Content-Disposition'] = 'inline; filename=files.json'
         return response
 
@@ -317,10 +317,10 @@ class AJAXSingleImageUploadView(FormView):
             raise Http404
 
         # Check for permissions
-        if (not hasattr(self.content_object, 'user')
-                or not self.content_object.user == self.user):
-            if (not hasattr(self.content_object, 'user_can_edit')
-                    or not self.content_object.user_can_edit(self.user)):
+        if (not hasattr(self.content_object, 'user') or not
+                self.content_object.user == self.user):
+            if (not hasattr(self.content_object, 'user_can_edit') or not
+                    self.content_object.user_can_edit(self.user)):
                 raise Http404
         return super(AJAXSingleImageUploadView, self).dispatch(
             request, *args, **kwargs)
@@ -351,8 +351,8 @@ class AJAXSingleImageUploadView(FormView):
         context_data = {
             'image': image,
             'mode': 'single',
-            'size': (self.request.POST.get('size')
-                     or u'{}x{}'.format(size[0], size[1])),
+            'size': (self.request.POST.get('size') or
+                     u'{}x{}'.format(size[0], size[1])),
         }
         context = RequestContext(self.request, context_data)
 
@@ -363,7 +363,7 @@ class AJAXSingleImageUploadView(FormView):
             'thumbnail_url': thumb.url,
             'list_item_html': render_to_string(self.template_name, context),
         }]}
-        response = HttpResponse(dumps(data), mimetype='application/json')
+        response = HttpResponse(dumps(data), content_type='application/json')
         response['Content-Disposition'] = 'inline; filename=files.json'
         return response
 

@@ -34,9 +34,16 @@ class UserMediaImageFormMixin(object):
 
     def __init__(self, *args, **kwargs):
         super(UserMediaImageFormMixin, self).__init__(*args, **kwargs)
+        try:
+            initial_image = getattr(
+                self.instance, self.image_field_name).order_by(
+                    '-id')[0].image
+        except IndexError:
+            initial_image = None
         self.fields[self.image_field_name] = forms.ImageField(
             required=self.require_user_media_image,
             label=self.image_label,
+            initial=initial_image,
         )
 
     def _delete_images(self, instance):

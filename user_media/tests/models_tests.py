@@ -1,13 +1,13 @@
 """Tests for the models of the ``django-user-media`` app."""
 from django.test import TestCase
 
-from .factories import UserMediaImageFactory
+from mixer.backend.django import mixer
 
 
 class UserMediaImageTestCase(TestCase):
     """Tests for the ``UserMediaImage`` model."""
     def setUp(self):
-        self.image = UserMediaImageFactory()
+        self.image = mixer.blend('user_media.UserMediaImage')
 
     def test_box_coordinates(self):
         self.assertFalse(self.image.box_coordinates, msg=(

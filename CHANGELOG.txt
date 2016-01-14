@@ -1,5 +1,9 @@
 === (ongoing) ===
 
+- Replaced factory boy with mixer
+- Optimized app for Django 1.8
+- Added initial image in form mixin
+
 === 1.1.X ===
 
 - Fixed UserMediaImage.box_coordinates

@@ -1,8 +1,5 @@
 """Settings that need to be set in order to run the tests."""
-import logging
 import os
-
-logging.getLogger("factory").setLevel(logging.WARN)
 
 DJANGO_PROJECT_ROOT = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..'))
@@ -34,13 +31,6 @@ TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), '../templates'),
 )
 
-COVERAGE_REPORT_HTML_OUTPUT_DIR = os.path.join(
-    os.path.dirname(__file__), 'coverage')
-COVERAGE_MODULE_EXCLUDES = [
-    'tests$', 'test_app', 'settings$', 'urls$', 'locale$',
-    'migrations', 'fixtures', 'admin$', 'django_extensions',
-]
-
 EXTERNAL_APPS = [
     'django.contrib.admin',
     'django.contrib.admindocs',
@@ -51,7 +41,6 @@ EXTERNAL_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
     'django.contrib.sites',
-    'django_nose',
     'easy_thumbnails',
     'django_libs',
     'generic_positions',
@@ -63,7 +52,6 @@ INTERNAL_APPS = [
 ]
 
 INSTALLED_APPS = EXTERNAL_APPS + INTERNAL_APPS
-COVERAGE_MODULE_EXCLUDES += EXTERNAL_APPS
 
 SECRET_KEY = 'xxx'
 

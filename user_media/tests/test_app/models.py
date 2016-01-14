@@ -41,7 +41,9 @@ class DummyModel(models.Model):
     tied to this content object.
 
     """
-    user = models.ForeignKey(getattr(settings, 'AUTH_USER_MODEL', 'auth.User'))
+    user = models.ForeignKey(
+        getattr(settings, 'AUTH_USER_MODEL', 'auth.User'),
+    )
 
     images = generic.GenericRelation(
         'user_media.UserMediaImage',
