@@ -1,7 +1,7 @@
 """URLs for the ``django-user-media`` app."""
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
-from user_media.views import (
+from .views import (
     AJAXImageCropView,
     AJAXMultipleImageUploadView,
     AJAXSingleImageUploadView,
@@ -11,8 +11,7 @@ from user_media.views import (
 )
 
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^image/create/$',
         CreateImageView.as_view(),
         name='user_media_image_create_no_ctype'),
@@ -34,4 +33,4 @@ urlpatterns = patterns(
     url(r'^upload-multiple/(?P<c_type>[-\w]+)/(?P<obj_id>\d+)/$',
         AJAXMultipleImageUploadView.as_view(),
         name='user_media_ajax_multiple_upload'),
-)
+]

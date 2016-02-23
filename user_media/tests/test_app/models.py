@@ -3,7 +3,7 @@ Dummy models needed for the tests of the `django-user-media` application.
 
 """
 from django.conf import settings
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes import fields
 from django.db import models
 
 
@@ -13,7 +13,7 @@ class DummyGallery(models.Model):
         getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
     )
 
-    images = generic.GenericRelation(
+    images = fields.GenericRelation(
         'user_media.UserMediaImage',
         blank=True, null=True,
     )
@@ -45,7 +45,7 @@ class DummyModel(models.Model):
         getattr(settings, 'AUTH_USER_MODEL', 'auth.User'),
     )
 
-    images = generic.GenericRelation(
+    images = fields.GenericRelation(
         'user_media.UserMediaImage',
     )
 

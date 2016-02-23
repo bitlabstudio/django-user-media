@@ -1,11 +1,11 @@
-# Install these requirements if you wish to contribute to this project.
-
-# ===========================================================================
-# Packages essential to this app. Needed by anyone who wants to use this app.
-# ===========================================================================
-Django==1.7.8
-Pillow==3.1.0
-django-libs==1.66.12
-django-generic-positions==0.1.7
-easy_thumbnails==2.3
-simplejson==3.8.1
+coverage<4.0.0
+django-coverage
+fabric
+easy_thumbnails
+flake8
+ipdb
+mixer
+mock
+tox
+django-compat
+six

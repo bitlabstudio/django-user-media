@@ -27,9 +27,20 @@ STATICFILES_DIRS = (
     os.path.join(DJANGO_PROJECT_ROOT, 'static'),
 )
 
-TEMPLATE_DIRS = (
-    os.path.join(os.path.dirname(__file__), '../templates'),
-)
+TEMPLATES = [{
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'APP_DIRS': True,
+    'DIRS': [os.path.join(os.path.dirname(__file__), '../templates')],
+    'OPTIONS': {
+        'context_processors': (
+            'django.contrib.auth.context_processors.auth',
+            'django.core.context_processors.i18n',
+            'django.core.context_processors.request',
+            'django.core.context_processors.media',
+            'django.core.context_processors.static',
+        )
+    }
+}]
 
 EXTERNAL_APPS = [
     'django.contrib.admin',

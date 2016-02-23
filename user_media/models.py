@@ -4,7 +4,7 @@ import os
 import uuid
 
 from django.conf import settings
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes import fields
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models.signals import post_delete
@@ -58,7 +58,7 @@ class UserMediaImage(models.Model):
         null=True, blank=True
     )
 
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = fields.GenericForeignKey('content_type', 'object_id')
 
     image = models.ImageField(
         upload_to=get_image_file_path,
@@ -66,7 +66,7 @@ class UserMediaImage(models.Model):
         verbose_name=_('Image'),
     )
 
-    generic_position = generic.GenericRelation(
+    generic_position = fields.GenericRelation(
         'generic_positions.ObjectPosition'
     )
 

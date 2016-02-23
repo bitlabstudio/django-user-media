@@ -50,7 +50,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'django',
-        'django-generic-positions',
+        'django-generic-positions>=0.2',
         'django-libs',
         'simplejson',
         'easy_thumbnails',
