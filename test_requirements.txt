@@ -1,0 +1,11 @@
+coverage
+django-coverage
+fabric3
+easy_thumbnails
+flake8
+ipdb
+mixer
+mock
+tox
+django-compat
+six

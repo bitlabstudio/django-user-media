@@ -17,6 +17,7 @@ class UserMediaImageFormMixinTestCase(TestCase):
         self.test_file = os.path.join(
             settings.DJANGO_PROJECT_ROOT, 'tests/test_media/img.png')
         with open(self.test_file) as f:
+            # TODO: Fix this test for Python 3.5
             form = DummyModelForm(
                 instance=mixer.blend('test_app.DummyModel'),
                 data={'user': mixer.blend('auth.User').pk},
@@ -34,6 +35,7 @@ class UserMediaImageFormTestCase(TestCase):
         self.test_file = os.path.join(
             settings.DJANGO_PROJECT_ROOT, 'tests/test_media/img.png')
         with open(self.test_file) as f:
+            # TODO: Fix this test for Python 3.5
             form = UserMediaImageForm(
                 mixer.blend('auth.User'), None, None,
                 files={'image': SimpleUploadedFile(f.name, f.read())})

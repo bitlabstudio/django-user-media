@@ -104,8 +104,8 @@ class CreateImageViewNoCtypeTestCase(ViewRequestFactoryTestMixin, TestCase):
             data = {'image': fp, }
             try:
                 self.is_postable(user=self.user, data=data)
-            except Exception, ex:
-                self.assertTrue('No content object' in ex.message, msg=(
+            except Exception as err:
+                self.assertTrue('No content object' in '{}'.format(err), msg=(
                     'If no content object and no ``next`` parameter given,'
                     ' view should raise an exception'))
 
@@ -164,8 +164,8 @@ class EditAndDeleteTestCaseMixin(object):
             self.is_postable(
                 user=self.user, to='/?foo=bar', data={'next': '/?foo=bar'},
                 kwargs={'pk': self.image_no_content_object.pk})
-        except Exception, ex:
-            self.assertTrue('No content object' in ex.message, msg=(
+        except Exception as err:
+            self.assertTrue('No content object' in '{}'.format(err), msg=(
                 'If no content object and no ``next`` parameter given,'
                 ' view should raise an exception'))
 

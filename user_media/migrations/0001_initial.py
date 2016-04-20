@@ -3,8 +3,6 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 from django.conf import settings
-import user_media.models
-
 
 class Migration(migrations.Migration):
 
@@ -19,7 +17,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('object_id', models.PositiveIntegerField(null=True, blank=True)),
-                ('image', models.ImageField(upload_to=user_media.models.get_image_file_path, null=True, verbose_name='Image', blank=True)),
+                ('image', models.ImageField(upload_to='images', null=True, verbose_name='Image', blank=True)),
                 ('thumb_x', models.PositiveIntegerField(null=True, verbose_name='Thumbnail x', blank=True)),
                 ('thumb_x2', models.PositiveIntegerField(null=True, verbose_name='Thumbnail x2', blank=True)),
                 ('thumb_y', models.PositiveIntegerField(null=True, verbose_name='Thumbnail y', blank=True)),
