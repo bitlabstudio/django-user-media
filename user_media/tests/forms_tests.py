@@ -1,11 +1,7 @@
 """Tests for the forms of the ``django-user-media`` app."""
-import os
-
-from django.conf import settings
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 
-from mixer.backend.django import mixer
+from mixer.backend.django import mixer, get_image
 
 from ..forms import UserMediaImageForm, UserMediaImageSingleUploadForm
 from .test_app.forms import DummyModelForm
@@ -14,35 +10,28 @@ from .test_app.forms import DummyModelForm
 class UserMediaImageFormMixinTestCase(TestCase):
     """Tests for the ``UserMediaImageFormMixin`` form mixin."""
     def test_mixin(self):
-        self.test_file = os.path.join(
-            settings.DJANGO_PROJECT_ROOT, 'tests/test_media/img.png')
-        with open(self.test_file) as f:
-            # TODO: Fix this test for Python 3.5
-            form = DummyModelForm(
-                instance=mixer.blend('test_app.DummyModel'),
-                data={'user': mixer.blend('auth.User').pk},
-                files={'images': SimpleUploadedFile(f.name, f.read())})
-            self.assertTrue(form.is_valid(), msg=(
-                'Should be valid, but returned: {}'.format(
-                    form.errors.items())))
-            form.save()
+        form = DummyModelForm(
+            instance=mixer.blend('test_app.DummyModel'),
+            data={'user': mixer.blend('auth.User').pk},
+            files={'images': get_image()})
+        self.assertTrue(form.is_valid(), msg=(
+            'Should be valid, but returned: {}'.format(
+                form.errors.items())))
+        form.save()
 
 
 class UserMediaImageFormTestCase(TestCase):
     """Tests for the ``UserMediaImageForm`` model form."""
+    longMessage = True
 
     def test_form(self):
-        self.test_file = os.path.join(
-            settings.DJANGO_PROJECT_ROOT, 'tests/test_media/img.png')
-        with open(self.test_file) as f:
-            # TODO: Fix this test for Python 3.5
-            form = UserMediaImageForm(
-                mixer.blend('auth.User'), None, None,
-                files={'image': SimpleUploadedFile(f.name, f.read())})
-            self.assertTrue(form.is_valid(), msg=(
-                'Should be valid but returned: %s' % form.errors.items()))
-            result = form.save()
-            self.assertTrue('.png' in result.image.url)
+        form = UserMediaImageForm(
+            mixer.blend('auth.User'), None, None,
+            files={'image': get_image()})
+        self.assertTrue(form.is_valid(), msg=(
+            'Should be valid but returned: %s' % form.errors.items()))
+        result = form.save()
+        self.assertIn('.jpg', result.image.url)
 
 
 class UserMediaImageSingleUploadFormTestCase(TestCase):

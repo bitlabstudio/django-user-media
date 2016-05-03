@@ -2,7 +2,7 @@
 
 === 1.2.X ===
 
-- prepared app for Django 1.9
+- prepared app for Django 1.9 and Python 3.5
 - Added widget attribute to form mixin
 - Replaced factory boy with mixer
 - Optimized app for Django 1.8

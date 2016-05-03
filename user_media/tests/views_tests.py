@@ -1,14 +1,9 @@
 """Tests for the views of the ``django-user-media`` app."""
-import os
-
-from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.core.files import File
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 
 from django_libs.tests.mixins import ViewRequestFactoryTestMixin
-from mixer.backend.django import mixer
+from mixer.backend.django import mixer, get_image
 
 from .. import views
 
@@ -41,21 +36,16 @@ class CreateImageViewTestCase(ViewRequestFactoryTestMixin, TestCase):
 
     def test_view(self):
         self.is_callable(self.user)
-        test_file = os.path.join(
-            settings.DJANGO_PROJECT_ROOT, 'tests/test_media/img.png')
 
-        with open(test_file) as fp:
-            data = {'image': fp, }
-            self.is_postable(user=self.user, data=data,
-                             to=self.dummy.get_absolute_url())
+        data = {'image': get_image(), }
+        self.is_postable(user=self.user, data=data,
+                         to=self.dummy.get_absolute_url())
 
-        with open(test_file) as fp:
-            data = {'image': fp, 'next': '/?foo=bar'}
-            self.is_postable(user=self.user, data=data, to='/?foo=bar')
+        data = {'image': get_image(), 'next': '/?foo=bar'}
+        self.is_postable(user=self.user, data=data, to='/?foo=bar')
 
-        with open(test_file) as fp:
-            data = {'image': fp, }
-            self.is_postable(user=self.user, data=data, to='/?foo=bar')
+        data = {'image': get_image(), }
+        self.is_postable(user=self.user, data=data, to='/?foo=bar')
 
         self.is_not_callable(post=True, user=self.user, kwargs={
             'content_type': 'dummymodel', 'object_id': 999})
@@ -93,21 +83,17 @@ class CreateImageViewNoCtypeTestCase(ViewRequestFactoryTestMixin, TestCase):
 
     def test_view(self):
         self.is_callable(self.user)
-        test_file = test_file = os.path.join(
-            settings.DJANGO_PROJECT_ROOT, 'tests/test_media/img.png')
 
-        with open(test_file) as fp:
-            data = {'image': fp, 'next': '/?foo=bar'}
-            self.is_postable(user=self.user, to='/?foo=bar', data=data)
+        data = {'image': get_image(), 'next': '/?foo=bar'}
+        self.is_postable(user=self.user, to='/?foo=bar', data=data)
 
-        with open(test_file) as fp:
-            data = {'image': fp, }
-            try:
-                self.is_postable(user=self.user, data=data)
-            except Exception as err:
-                self.assertTrue('No content object' in '{}'.format(err), msg=(
-                    'If no content object and no ``next`` parameter given,'
-                    ' view should raise an exception'))
+        data = {'image': get_image(), }
+        try:
+            self.is_postable(user=self.user, data=data)
+        except Exception as err:
+            self.assertTrue('No content object' in '{}'.format(err), msg=(
+                'If no content object and no ``next`` parameter given,'
+                ' view should raise an exception'))
 
 
 class EditAndDeleteTestCaseMixin(object):
@@ -117,11 +103,8 @@ class EditAndDeleteTestCaseMixin(object):
         self.user = self.dummy.user
         self.image = mixer.blend('user_media.UserMediaImage', user=self.user)
         self.image.content_object = self.dummy
-        logo_file = os.path.join(
-            settings.DJANGO_PROJECT_ROOT, 'tests/test_media/logo.png')
-        with open(logo_file) as f:
-            self.image.image.save(logo_file, File(f))
-            self.image.save()
+        self.image.image = get_image()
+        self.image.save()
         self.image_no_content_object = mixer.blend(
             'user_media.UserMediaImage', user=self.user)
         self.other_image = mixer.blend('user_media.UserMediaImage')
@@ -212,15 +195,10 @@ class AJAXMultipleImageUploadViewTestCase(ViewRequestFactoryTestMixin,
         return {'c_type': self.c_type, 'obj_id': self.profile.id}
 
     def upload_to_gallery(self):
-        test_file = os.path.join(
-            settings.DJANGO_PROJECT_ROOT, 'tests/test_media/img.png')
-        with open(test_file) as fp:
-            self.file = SimpleUploadedFile('img.png', '')
-            self.file.file = fp
-            kwargs = {'c_type': self.c_type, 'obj_id': self.profile.id}
-            self.is_postable(
-                data={'image': self.file}, ajax=True, user=self.profile.user,
-                kwargs=kwargs, msg=('Upload should be valid.'))
+        kwargs = {'c_type': self.c_type, 'obj_id': self.profile.id}
+        self.is_postable(
+            data={'image': get_image()}, ajax=True, user=self.profile.user,
+            kwargs=kwargs, msg=('Upload should be valid.'))
 
     def test_view(self):
         self.is_not_callable(user=self.profile.user,
@@ -258,14 +236,11 @@ class AJAXMultipleImageUploadViewTestCase(ViewRequestFactoryTestMixin,
         self.upload_to_gallery()
         self.upload_to_gallery()
 
-        f = open(os.path.join(
-            settings.DJANGO_PROJECT_ROOT, 'tests/test_media/img.png'))
         resp = self.is_postable(
-            data={'image': f}, ajax=True, user=self.profile.user,
+            data={'image': get_image()}, ajax=True, user=self.profile.user,
             msg=('Upload should be valid.'))
-        self.assertEqual(resp.content, 'Maximum amount limit exceeded.', msg=(
+        self.assertEqual(resp.content, b'Maximum amount limit exceeded.', msg=(
             'Should return an error message.'))
-        f.close()
 
 
 class AJAXSingleImageUploadViewTestCase(ViewRequestFactoryTestMixin, TestCase):
@@ -292,12 +267,9 @@ class AJAXSingleImageUploadViewTestCase(ViewRequestFactoryTestMixin, TestCase):
         self.is_not_callable(post=True, user=self.gallery.user_connection,
                              msg=('Should only be callable via AJAX.'))
 
-        logo_file = os.path.join(
-            settings.DJANGO_PROJECT_ROOT, 'tests/test_media/logo.png')
-        with open(logo_file) as f:
-            self.is_postable(
-                data={'logo': f}, ajax=True, user=self.gallery.user_connection,
-                msg=('Upload should be valid.'))
+        self.is_postable(
+            data={'logo': get_image()}, ajax=True,
+            user=self.gallery.user_connection, msg=('Upload should be valid.'))
 
         new_kwargs = {
             'c_type': 'foo',
@@ -356,11 +328,8 @@ class AJAXImageCropViewTestCase(ViewRequestFactoryTestMixin, TestCase):
         return {'pk': self.image.pk}
 
     def test_view(self):
-        logo_file = os.path.join(
-            settings.DJANGO_PROJECT_ROOT, 'tests/test_media/logo.png')
-        with open(logo_file) as f:
-            self.image.image.save(logo_file, File(f))
-            self.image.save()
+        self.image.image = get_image()
+        self.image.save()
         self.is_not_callable(user=self.image.user)
         data = {'x': 10, 'x2': 15, 'y': 2, 'y2': 10, 'w': 5, 'h': 8}
         self.is_postable(user=self.image.user, data=data, ajax=True)
