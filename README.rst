@@ -72,10 +72,10 @@ Add generic relation
 Let's assume that you have a ``UserProfile`` model and you want to add an
 ``avatar`` field to that model.
 
-First you might want to add a ``GenericRelation`` to your ``UserProfile``
+First you might want to add a [``GenericRelation``](https://docs.djangoproject.com/en/1.8/ref/contrib/contenttypes/#django.contrib.contenttypes.fields.GenericRelation) to your ``UserProfile``
 model::
 
-    from django.contrib.contenttypes import generic
+    from django.contrib.contenttypes import fields
 
 
     class UserProfile(models.Model):
@@ -84,7 +84,7 @@ model::
             getattr(settings, 'AUTH_USER_MODEL', 'auth.User'),
         )
 
-        avatar = generic.GenericRelation(
+        avatar = fields.GenericRelation(
             'user_media.UserMediaImage',
         )
 
