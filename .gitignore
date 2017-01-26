@@ -6,5 +6,5 @@ db.sqlite
 build/
 dist/
 .coverage
-*media/
+media/
 *.tox/
