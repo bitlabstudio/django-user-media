@@ -47,11 +47,13 @@ class UserMediaImage(models.Model):
     user = models.ForeignKey(
         getattr(settings, 'AUTH_USER_MODEL', 'auth.User'),
         verbose_name=_('User'),
+        on_delete=models.CASCADE
     )
 
     content_type = models.ForeignKey(
         ContentType,
         null=True, blank=True,
+        on_delete=models.CASCADE
     )
 
     object_id = models.PositiveIntegerField(
