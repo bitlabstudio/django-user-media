@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import ObjectDoesNotExist
 from django.http import Http404, HttpResponse
-from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
@@ -268,19 +267,18 @@ class AJAXMultipleImageUploadView(CreateView):
         })
 
         # Prepare context for the list item html
-        context_data = {
+        context = {
             'image': self.object,
             'mode': 'multiple',
         }
-        context = RequestContext(self.request, context_data)
-
         # Prepare the json response
         data = {'files': [{
             'name': f.name,
             'url': self.object.image.url,
             'thumbnail_url': thumb.url,
             'list_item_html': render_to_string(
-                'user_media/partials/image.html', context),
+                'user_media/partials/image.html', context=context,
+                request=self.request),
         }]}
         response = HttpResponse(dumps(data), content_type='application/json')
         response['Content-Disposition'] = 'inline; filename=files.json'
@@ -348,20 +346,19 @@ class AJAXSingleImageUploadView(FormView):
         })
 
         # Prepare context for the list item html
-        context_data = {
+        context = {
             'image': image,
             'mode': 'single',
             'size': (self.request.POST.get('size') or
                      u'{}x{}'.format(size[0], size[1])),
         }
-        context = RequestContext(self.request, context_data)
-
         # Prepare the json response
         data = {'files': [{
             'name': f.name,
             'url': image.url,
             'thumbnail_url': thumb.url,
-            'list_item_html': render_to_string(self.template_name, context),
+            'list_item_html': render_to_string(
+                self.template_name, context=context, request=self.request),
         }]}
         response = HttpResponse(dumps(data), content_type='application/json')
         response['Content-Disposition'] = 'inline; filename=files.json'
