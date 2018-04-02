@@ -2,6 +2,7 @@
 
 === 1.2.X ===
 
+- Small updates for Django>1.9
 - Fixed broken paths in css files
 - prepared app for Django 1.9 and Python 3.5
 - Added widget attribute to form mixin
