@@ -10,7 +10,8 @@ from django.db import models
 class DummyGallery(models.Model):
     """Model to simulate a gallery."""
     user_connection = models.ForeignKey(
-        getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
+        getattr(settings, 'AUTH_USER_MODEL', 'auth.User'),
+        on_delete=models.CASCADE,
     )
 
     images = fields.GenericRelation(
@@ -43,6 +44,7 @@ class DummyModel(models.Model):
     """
     user = models.ForeignKey(
         getattr(settings, 'AUTH_USER_MODEL', 'auth.User'),
+        on_delete=models.CASCADE,
     )
 
     images = fields.GenericRelation(

@@ -349,8 +349,7 @@ class AJAXSingleImageUploadView(FormView):
         context = {
             'image': image,
             'mode': 'single',
-            'size': (self.request.POST.get('size') or
-                     u'{}x{}'.format(size[0], size[1])),
+            'size': self.request.POST.get('size') or u'{}x{}'.format(size[0], size[1]),
         }
         # Prepare the json response
         data = {'files': [{

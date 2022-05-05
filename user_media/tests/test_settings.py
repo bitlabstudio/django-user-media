@@ -33,6 +33,7 @@ TEMPLATES = [{
     'DIRS': [os.path.join(os.path.dirname(__file__), '../templates')],
     'OPTIONS': {
         'context_processors': (
+            'django.contrib.messages.context_processors.messages',
             'django.contrib.auth.context_processors.auth',
             'django.template.context_processors.i18n',
             'django.template.context_processors.request',
@@ -73,3 +74,13 @@ THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.scale_and_crop',
     'easy_thumbnails.processors.filters',
 )
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]

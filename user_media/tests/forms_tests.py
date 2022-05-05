@@ -31,7 +31,7 @@ class UserMediaImageFormTestCase(TestCase):
         self.assertTrue(form.is_valid(), msg=(
             'Should be valid but returned: %s' % form.errors.items()))
         result = form.save()
-        self.assertIn('.jpg', result.image.url)
+        self.assertIn('.gif', result.image.url)
 
 
 class UserMediaImageSingleUploadFormTestCase(TestCase):

@@ -24,8 +24,9 @@ class Migration(migrations.Migration):
                 ('thumb_y2', models.PositiveIntegerField(null=True, verbose_name='Thumbnail y2', blank=True)),
                 ('thumb_w', models.PositiveIntegerField(null=True, verbose_name='Thumbnail width', blank=True)),
                 ('thumb_h', models.PositiveIntegerField(null=True, verbose_name='Thumbnail height', blank=True)),
-                ('content_type', models.ForeignKey(blank=True, to='contenttypes.ContentType', null=True)),
-                ('user', models.ForeignKey(verbose_name='User', to=settings.AUTH_USER_MODEL)),
+                ('content_type', models.ForeignKey(blank=True, to='contenttypes.ContentType', null=True,
+                                                   on_delete=models.SET_NULL)),
+                ('user', models.ForeignKey(verbose_name='User', to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
             },
