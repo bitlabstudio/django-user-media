@@ -4,8 +4,9 @@ As you know, every app must be hooked into your main ``urls.py`` so that
 you can actually reach the app's views (provided it has any views, of course).
 
 """
+
 from django.conf import settings
-from django.conf.urls import include, url
+from django.urls import include, re_path
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
@@ -20,9 +21,9 @@ urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += staticfiles_urlpatterns()
 
 urlpatterns += [
-    url(r'^jsi18n.js$', JavaScriptCatalog.as_view(), name='javascript_catalog'),
-    url(r'^admin/', admin.site.urls),
-    url(r'^positions/', include('generic_positions.urls')),
-    url(r'^user_media/', include('user_media.urls')),
-    url(r'^$', HomeView.as_view()),
+    re_path(r"^jsi18n.js$", JavaScriptCatalog.as_view(), name="javascript_catalog"),
+    re_path(r"^admin/", admin.site.urls),
+    re_path(r"^positions/", include("generic_positions.urls")),
+    re_path(r"^user_media/", include("user_media.urls")),
+    re_path(r"^$", HomeView.as_view()),
 ]
