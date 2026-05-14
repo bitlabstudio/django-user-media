@@ -1,7 +1,8 @@
 """Forms for the ``django-user-media`` app."""
+
 from django import forms
 from django.contrib.contenttypes.models import ContentType
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from user_media.models import UserMediaImage
 
@@ -28,17 +29,17 @@ class UserMediaImageFormMixin(object):
 
     """
 
-    image_label = _('Image')
+    image_label = _("Image")
     require_user_media_image = False
-    image_field_name = 'user_media_image'
+    image_field_name = "user_media_image"
     image_widget = forms.ClearableFileInput()
 
     def __init__(self, *args, **kwargs):
         super(UserMediaImageFormMixin, self).__init__(*args, **kwargs)
         try:
-            initial_image = getattr(
-                self.instance, self.image_field_name).order_by(
-                    '-id')[0].image
+            initial_image = (
+                getattr(self.instance, self.image_field_name).order_by("-id")[0].image
+            )
         except IndexError:
             initial_image = None
         self.fields[self.image_field_name] = forms.ImageField(
@@ -63,8 +64,7 @@ class UserMediaImageFormMixin(object):
             self._delete_images(instance)
             image = UserMediaImage()
             image.user = instance.user
-            image.content_type = ContentType.objects.get_for_model(
-                instance)
+            image.content_type = ContentType.objects.get_for_model(instance)
             image.object_id = instance.pk
             image.image = umedia_image
             image.save()
@@ -73,18 +73,19 @@ class UserMediaImageFormMixin(object):
 
 class UserMediaImageForm(forms.ModelForm):
     """Form that allows to create or update an `UserMediaImage` object."""
+
     class Meta:
         model = UserMediaImage
-        fields = ('image', )
+        fields = ("image",)
 
-    def __init__(self, user, content_type=None, object_id=None,
-                 *args, **kwargs):
+    def __init__(self, user, content_type=None, object_id=None, *args, **kwargs):
         self.user = user
         self.content_type = content_type
         self.object_id = object_id
         if content_type is not None and object_id is not None:
             self.content_object = content_type.get_object_for_this_type(
-                pk=self.object_id)
+                pk=self.object_id
+            )
         super(UserMediaImageForm, self).__init__(*args, **kwargs)
 
     def clean_image(self):
@@ -99,7 +100,7 @@ class UserMediaImageForm(forms.ModelForm):
 
         """
         self.instance.user = self.user
-        data = self.cleaned_data.get('image')
+        data = self.cleaned_data.get("image")
         return data
 
     def save(self, *args, **kwargs):
@@ -112,7 +113,8 @@ class UserMediaImageForm(forms.ModelForm):
 
 class UserMediaImageSingleUploadForm(forms.ModelForm):
     """Form to save a single image upload."""
+
     def __init__(self, image_field, *args, **kwargs):
-        self._meta.model = type(kwargs['instance'])
+        self._meta.model = type(kwargs["instance"])
         super(UserMediaImageSingleUploadForm, self).__init__(*args, **kwargs)
         self.fields[image_field] = forms.ImageField()

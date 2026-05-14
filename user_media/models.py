@@ -1,4 +1,5 @@
 """Models for the ``django-user-media`` app."""
+
 import glob
 import os
 import uuid
@@ -9,15 +10,14 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 def get_image_file_path(instance, filename):
     """Returns a unique filename for images."""
-    ext = filename.split('.')[-1]
-    filename = '%s.%s' % (uuid.uuid4(), ext)
-    return os.path.join(
-        'user_media', str(instance.user.pk), 'images', filename)
+    ext = filename.split(".")[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return os.path.join("user_media", str(instance.user.pk), "images", filename)
 
 
 class UserMediaImage(models.Model):
@@ -44,62 +44,67 @@ class UserMediaImage(models.Model):
     :thumb_h: Thumbnail height.
 
     """
+
     user = models.ForeignKey(
-        getattr(settings, 'AUTH_USER_MODEL', 'auth.User'),
-        verbose_name=_('User'),
+        getattr(settings, "AUTH_USER_MODEL", "auth.User"),
+        verbose_name=_("User"),
         on_delete=models.CASCADE,
     )
 
     content_type = models.ForeignKey(
         ContentType,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         on_delete=models.CASCADE,
     )
 
-    object_id = models.PositiveIntegerField(
-        null=True, blank=True
-    )
+    object_id = models.PositiveIntegerField(null=True, blank=True)
 
-    content_object = fields.GenericForeignKey('content_type', 'object_id')
+    content_object = fields.GenericForeignKey("content_type", "object_id")
 
     image = models.ImageField(
         upload_to=get_image_file_path,
-        null=True, blank=True,
-        verbose_name=_('Image'),
+        null=True,
+        blank=True,
+        verbose_name=_("Image"),
     )
 
-    generic_position = fields.GenericRelation(
-        'generic_positions.ObjectPosition'
-    )
+    generic_position = fields.GenericRelation("generic_positions.ObjectPosition")
 
     thumb_x = models.PositiveIntegerField(
-        verbose_name=_('Thumbnail x'),
-        null=True, blank=True,
+        verbose_name=_("Thumbnail x"),
+        null=True,
+        blank=True,
     )
 
     thumb_x2 = models.PositiveIntegerField(
-        verbose_name=_('Thumbnail x2'),
-        null=True, blank=True,
+        verbose_name=_("Thumbnail x2"),
+        null=True,
+        blank=True,
     )
 
     thumb_y = models.PositiveIntegerField(
-        verbose_name=_('Thumbnail y'),
-        null=True, blank=True,
+        verbose_name=_("Thumbnail y"),
+        null=True,
+        blank=True,
     )
 
     thumb_y2 = models.PositiveIntegerField(
-        verbose_name=_('Thumbnail y2'),
-        null=True, blank=True,
+        verbose_name=_("Thumbnail y2"),
+        null=True,
+        blank=True,
     )
 
     thumb_w = models.PositiveIntegerField(
-        verbose_name=_('Thumbnail width'),
-        null=True, blank=True,
+        verbose_name=_("Thumbnail width"),
+        null=True,
+        blank=True,
     )
 
     thumb_h = models.PositiveIntegerField(
-        verbose_name=_('Thumbnail height'),
-        null=True, blank=True,
+        verbose_name=_("Thumbnail height"),
+        null=True,
+        blank=True,
     )
 
     @property
@@ -121,16 +126,16 @@ class UserMediaImage(models.Model):
 
     def large_size(self, as_string=True):
         """Returns a thumbnail's large size."""
-        size = getattr(settings, 'USER_MEDIA_THUMB_SIZE_LARGE', (150, 150))
+        size = getattr(settings, "USER_MEDIA_THUMB_SIZE_LARGE", (150, 150))
         if as_string:
-            return u'{}x{}'.format(size[0], size[1])
+            return "{}x{}".format(size[0], size[1])
         return size
 
     def small_size(self, as_string=True):
         """Returns a thumbnail's small size."""
-        size = getattr(settings, 'USER_MEDIA_THUMB_SIZE_SMALL', (95, 95))
+        size = getattr(settings, "USER_MEDIA_THUMB_SIZE_SMALL", (95, 95))
         if as_string:
-            return u'{}x{}'.format(size[0], size[1])
+            return "{}x{}".format(size[0], size[1])
         return size
 
 
@@ -142,7 +147,8 @@ def image_post_delete_handler(sender, instance, **kwargs):
     This should prevent a load of "dead" image files on disc.
 
     """
-    for f in glob.glob('{}/{}*'.format(instance.image.storage.location,
-                                       instance.image.name)):
+    for f in glob.glob(
+        "{}/{}*".format(instance.image.storage.location, instance.image.name)
+    ):
         if not os.path.isdir(f):
             instance.image.storage.delete(f)
